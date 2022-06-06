@@ -15,12 +15,22 @@ document.getElementById("id_back").style.display = "none";
 document.getElementById("id_back").style.display = "none";
 </script>
 not working yet -->
+{% for message in get_flashed_messages() %}
+    <div class="alert_message">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+{% endfor %}
+
 
 <div class="content">
     <h1 style="text-align: center;">My Table</h1>
     <hr color="teal">
     {% if tasks|length < 1 %} <!-- if there are no entries show the header below -->
-        <p style="font-size: 150%; color: red; text-align: center">There are no entries...</p>
+        <p style="font-size: 150%; color: red; text-align: center">There are no entries... Please fill in an entry name in the form.</p>
 
     {% else %}
 
@@ -58,9 +68,18 @@ not working yet -->
     <div class="button_add_name">
 
         <form action="/" method="POST">
+            {{ form.hidden_tag() }}
+
+            {{ form.name.label(
+            class='form-label') }}
             <br>
-            Name: <input type="text" name="name" required>
-            <input type="submit" style="background-color: hsl(340, 20%, 65%);" value="Add Name">
+            {{ form.name(
+            class='form-control') }}
+            </br>
+            {{ form.submit(
+            class='btn-btn-primary') }}
+            <!--Name: <input type="text" name="name" required>
+            <input type="submit" style="background-color: hsl(340, 20%, 65%);" value="Add Name">-->
         </form>
     </div>
 

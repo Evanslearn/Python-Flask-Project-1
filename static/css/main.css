@@ -8,6 +8,17 @@ p {
     text-align: center;
 }
 
+.btn-btn-primary {
+  background-color: hsl(340, 20%, 65%);
+}
+
+.alert_message {
+  border: 0.5px solid yellow;
+  margin: 0 auto;
+  font-size: 150%;
+  max-width: 30%;
+}
+
 table, th, td{
     border: 1px solid black;
     border-collapse: collapse;

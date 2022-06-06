@@ -11,7 +11,7 @@
             <h1 style="text-align: center">Input Desired Username and Password to Register</h1>
 
             <div class = "register_form" style="text-align: center;">
-                <form action="/register/" method="POST">
+              <!--  <form action="/register/" method="POST">
                     <label for="username">Username:</label><br>
                     <input type="text" name="username" required><br>
                     <label for="password">Password (at least 6 characters):</label><br>
@@ -19,6 +19,36 @@
                     <label for="password_repeat">Confirm Password (match the password field):</label><br>
                     <input type="password" name="password_repeat" minlength="6" required><br>
                     <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
+                </form>-->
+                <form action="/register/" method="POST">
+                    {{ form.hidden_tag() }}
+
+                    {{ form.username.label(
+                    class='form-label') }}
+                    </br>
+
+                    {{ form.username(
+                    class='form-control') }}
+                    </br>
+
+                    {{ form.password.label(
+                    class='form-label') }}
+                    </br>
+
+                    {{ form.password(
+                    class='form-control') }}
+                    </br>
+
+                    {{ form.password_repeat.label(
+                    class='form-label') }}
+                    </br>
+
+                    {{ form.password_repeat(
+                    class='form-control') }}
+                    </br>
+
+                    {{ form.submit(
+                    class='btn-btn-primary') }}
                 </form>
             </div>
 

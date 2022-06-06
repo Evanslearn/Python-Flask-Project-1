@@ -10,8 +10,17 @@
 
         <div class = "button_update_name">
             <form action="/update/name/{{task.id}}" method="POST">
-                <input type="text" name="name" value="{{task.name}}">
-                <input type="submit" value="Update Name" style="background-color: hsl(340, 20%, 65%);">
+            {{ form.hidden_tag() }}
+
+            {{ form.name.label(
+            class='form-label') }}
+            <br>
+
+            {{ form.name(value=task.name,
+            class='form-control') }}
+            </br>
+            {{ form.submit(
+            class='btn-btn-primary') }}
             </form>
         </div>
     </div>

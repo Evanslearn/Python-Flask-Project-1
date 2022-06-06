@@ -10,8 +10,17 @@
 
         <div class = "button_update_address">
             <form action="/update/address/{{task.id}}" method="POST">
-                <input type="email" name="email_address" value="{% if task.email_address is not none %}  {{  task.email_address }}  {% endif %}">
-                <input type="submit" value="Update Address" style="background-color: hsl(340, 20%, 65%);">
+            {{ form.hidden_tag() }}
+
+            {{ form.address.label(
+            class='form-label') }}
+            <br>
+
+            {{ form.address(value=task.email_address,
+            class='form-control') }}
+            </br>
+            {{ form.submit(
+            class='btn-btn-primary') }}
             </form>
         </div>
     </div>
