@@ -1,0 +1,55 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>Calculator</title>
+<script type="text/javascript" src="{{ url_for('static', filename='jscripts/calculator.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="calculator">
+    <table>
+
+        <tr> <th colspan="4">For now, only supports one evaluation at a time!!!</th> </tr>
+        <tr>
+            <th colspan="3"> <input type="text" id ='calc_screen'/> </th>
+            <th> <input type="button" value="CLEAR" onclick="clearCalc('calc_screen');"</th> <!-- THIS BUTTON CLEARS THE SCREEN -->
+        </tr>
+
+        <tr>
+            <td> <input type="button" value="1" onclick="writeCalc('1', 'calc_screen');"/> </td>
+            <td> <input type="button" value="2" onclick="writeCalc('2', 'calc_screen');"/> </td>
+            <td> <input type="button" value="3" onclick="writeCalc('3', 'calc_screen');"/> </td>
+            <td> <input type="button" value="+" onclick="writeCalc(' + ', 'calc_screen');"/> </td>
+        </tr>
+
+        <tr>
+            <td> <input type="button" value="4" onclick="writeCalc('4', 'calc_screen');"/> </td>
+            <td> <input type="button" value="5" onclick="writeCalc('5', 'calc_screen');"/> </td>
+            <td> <input type="button" value="6" onclick="writeCalc('6', 'calc_screen');"/> </td>
+            <td> <input type="button" value="-" onclick="writeCalc(' - ', 'calc_screen');"/> </td>
+        </tr>
+
+        <tr>
+            <td> <input type="button" value="7" onclick="writeCalc('7', 'calc_screen');"/> </td>
+            <td> <input type="button" value="8" onclick="writeCalc('8', 'calc_screen');"/> </td>
+            <td> <input type="button" value="9" onclick="writeCalc('9', 'calc_screen');"/> </td>
+            <td> <input type="button" value="*" onclick="writeCalc(' * ', 'calc_screen');"/> </td>
+        </tr>
+
+        <tr>
+            <td> <input type="button" value="." onclick="writeCalc('.', 'calc_screen');"/> </td>
+            <td> <input type="button" value="0" onclick="writeCalc('0', 'calc_screen');"/> </td>
+            <td> <input type="button" id ="myenter" value="=" onclick="evalCalc('calc_screen')"/> </td>
+            <td> <input type="button" value="/" onclick="writeCalc(' / ', 'calc_screen');"/> </td>
+        </tr>
+    </table>
+</div>
+
+    <!-- Calculate (press =) when you press enter, as well -->
+    <script>
+        Enter_Trigger("calc_screen","myenter");
+    </script>
+
+
+
+{% endblock %}

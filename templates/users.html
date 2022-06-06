@@ -1,0 +1,48 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>USERS</title>
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center;">Users Credentials</h1>
+    <hr color="teal">
+    {% if users|length < 1 %} <!-- if there are no entries show the header below -->
+        <p style="font-size: 150%; color: red; text-align: center">There are no users...</p>
+
+    {% else %}
+
+
+        <table>
+            <tr>  <!-- Header Row -->
+                <th>Entry ID</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for user in users %}
+                <tr> <!-- Elements Row(s) -->
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.password_hash }}</td>
+                    <td>{{ user.date_created.date() }}</td> <!-- We show only date, but our database contains date and time -->
+                    <td>
+                        <a href="/users/delete/{{user.id}}">Delete User</a>
+                        <br>
+                        <a href="/update/name/{{user.id}}">Update Name</a>
+                        <br>
+                        <a href="/update/address/{{user.id}}">Update Address</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    {% endif %}
+
+
+
+
+{% endblock %}

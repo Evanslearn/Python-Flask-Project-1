@@ -1,0 +1,64 @@
+*{background-color: hsl(190, 15%, 65%);}
+
+body {
+font-size: 110%;
+}
+
+p {
+    text-align: center;
+}
+
+table, th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+}
+
+tr:hover {
+color: hsl(360, 50%, 50%);
+}
+
+
+/* --- When we mouse over a link it becomes red --- */
+a:hover {
+  color: red;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+#button_login, .button_login, .button_add_name, .button_update_name, .button_update_address, .button_back{
+  display:flex;
+  justify-content:center;
+}
+
+button[type=button] {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  justify-content:center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: auto
+}
+
+#login_failed, #register_failed {
+  margin: 0 auto;
+  margin-top: 20px;
+  background-color: #FF9494; /* RED */
+  border: none;
+  padding: 20px;
+  text-decoration: none;
+  font-size: 16px;
+  width: 240px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

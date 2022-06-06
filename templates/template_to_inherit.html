@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> <!-- Various compatibilities -->
+    <!-- our css files -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/topnav.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calculator.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favic.png') }}"> <!-- a favicon -->
+
+    <!-- by using the {{ x }} symbolism, we can show the python variable x on our html page
+    <!-- TOP NAVIGATION BAR -->
+    <div class="topnav">
+        <a href="/">Home</a>
+        <a href="/toolbox/" id="button_toolbox">Toolbox</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{url_for('profile')}}" id="button_profile">Profile</a>
+            <a href="{{url_for('logout')}}" id="button_logout" ">Logout</a>
+        {% else %}
+            <a href="/register/" id="button_register">Register</a>
+            <a href="/login/" id="button_login">Login</a>
+        {% endif %}
+
+    </div>
+
+    {% block head %}
+
+    {% endblock %}  <!--Where we insert our code for other templates-->
+</head>
+
+<body>
+    {% block body %}
+
+    {% endblock %}  <!--Where we insert our code for other templates-->
+</body>
+
+</html>

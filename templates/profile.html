@@ -1,0 +1,65 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+{% if current_user.is_authenticated %}
+<title>Profile {{ current_user.username }}! </title>
+{% endif %}
+{% endblock %}
+
+{% block body %}
+{% if current_user.is_authenticated %}
+{% if id == current_user.id %}
+
+<div class="split left" id = "profile0">
+    <div class="centered">
+        <h2>Greetings!<br> Your Basic information is here: </h2>
+           <ul>
+               <li> <strong> Username:</strong> {{ current_user.username }}</li>
+               <li> <strong>User ID:</strong> {{ current_user.id }}</li>
+               <li> <strong>Date Registered:</strong> {{ current_user.date_created }}</li>
+           </ul>
+
+        {% if description0 == 'null' %}
+        <h4>Add a short profile descriptions below:</h4>
+        <form action="/profile/" method="POST">
+            <label for="description"></label>
+            <textarea id="description" cols="40" rows="10" placeholder="Please write a short description"></textarea>
+            <br>
+            <input type="submit" value="Update Description">
+        </form>
+
+        {% else %}
+        <h3>Profile Description: </h3>
+        <p>{{ description0 }}</p>
+        <h4>Update your profile descriptions below:</h4>
+        <form action="/profile/" method="POST">
+            <label for="description_update"></label>
+            <textarea id="description_update" cols="40" rows="10">{{ description0 }}</textarea>
+            <br>
+            <input type="submit" value="Update Description">
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="split right" id ="myposts0">
+    <!--div class="centered"-->
+        <h2>Dear {{ current_user.username }},<br> Something on your mind you need to share? </h2>
+            <form action="/profile/" method="POST">
+                <label for="share_post">Share your thoughts!</label><br>
+                <input type="text" id="share_post"><br>
+                <input type="submit" value="Share."/>
+            </form>
+        <ul>
+            {% for post in posts %}
+            <li>{{ posts.content }}</li>
+            {% endfor %}
+        </ul>
+    <!--/div-->
+</div>
+
+
+
+{% endif %}
+{% endif %}
+{% endblock %}

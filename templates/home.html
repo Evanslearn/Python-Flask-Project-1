@@ -1,0 +1,70 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>Home Page</title>
+{% endblock %}
+
+{% block body %}
+<!--
+<script type="text/javascript" src="/jscripts/test.js">
+document.getElementById("id_back").style.display = "none";
+</script>
+-->
+<!--
+<script type="text/javascript">
+document.getElementById("id_back").style.display = "none";
+</script>
+not working yet -->
+
+<div class="content">
+    <h1 style="text-align: center;">My Table</h1>
+    <hr color="teal">
+    {% if tasks|length < 1 %} <!-- if there are no entries show the header below -->
+        <p style="font-size: 150%; color: red; text-align: center">There are no entries...</p>
+
+    {% else %}
+
+
+        <table>
+            <tr>  <!-- Header Row -->
+                <th>Entry ID</th>
+                <th>Name</th>
+                <th>Added</th>
+                <th>E-Mail Address</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for task in tasks %}
+                <tr> <!-- Elements Row(s) -->
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name }}</td>
+                    </td>
+                    <td>{{ task.date_created.date() }}</td> <!-- We show only date, but our database contains date and time -->
+                    <td> {% if task.email_address is not none %}  {{  task.email_address }}  {% endif %}  </td> <!-- We want to show an empty cell, if no value is given for address -->
+                    <td>
+                        <a href="/delete/{{task.id}}">Delete Name</a>
+                        <br>
+                        <a href="/update/name/{{task.id}}">Update Name</a>
+                        <br>
+                        <a href="/update/address/{{task.id}}">Update Address</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    {% endif %}
+
+
+    <div class="button_add_name">
+
+        <form action="/" method="POST">
+            <br>
+            Name: <input type="text" name="name" required>
+            <input type="submit" style="background-color: hsl(340, 20%, 65%);" value="Add Name">
+        </form>
+    </div>
+
+
+
+
+{% endblock %}

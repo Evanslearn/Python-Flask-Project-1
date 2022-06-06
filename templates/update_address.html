@@ -1,0 +1,20 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>Update Address Page</title>
+{% endblock %}
+
+{% block body %}
+    <div class="content">
+        <h1 style="text-align: center">Update Email Address {{task.id}}</h1>
+
+        <div class = "button_update_address">
+            <form action="/update/address/{{task.id}}" method="POST">
+                <input type="email" name="email_address" value="{% if task.email_address is not none %}  {{  task.email_address }}  {% endif %}">
+                <input type="submit" value="Update Address" style="background-color: hsl(340, 20%, 65%);">
+            </form>
+        </div>
+    </div>
+
+
+{% endblock %}

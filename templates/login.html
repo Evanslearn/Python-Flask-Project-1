@@ -1,0 +1,54 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>Login Page</title>
+<script type="text/javascript" src="{{ url_for('static', filename='jscripts/main.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<!-- script to make div with id in function argument appear
+You can set style="display: none" in the div-->
+<!--
+    <div id="button1" style="text-align: center;">
+        <button type="button" id="login_button" onclick="loginForm('login_form_full');">Login</button>
+    </div>
+    -->
+<!--
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} -->
+
+    <div id="login_form_full">
+        <h1 style="text-align: center">Input Username and Password to Login</h1>
+
+        <div class = "login_form" style="text-align: center;">
+            <form action="/login/" method="POST">
+                <label for="username">Username:</label><br>
+                <input type="text" name="username" required><br>
+                <label for="password">Password (at least 6 characters):</label><br>
+                <input type="password" name="password" minlength="6" required><br>
+                <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
+            </form>
+        </div>
+
+        <div id="login_failed" style="text-align: center"></div>
+    </div>
+
+    <script type="text/javascript">
+    {
+        authFail( {{ flag_login }}, "login_failed", "{{ my_message }}" );
+    }
+    </script>
+
+    <br> <br> <br> <br> <br> <br>
+    <p><strong>New visitor?<br> Click the button below to be taken to the registration page!</strong></p>
+    <div id="button0" style="text-align: center;">
+        <button type="button" id="register_button" onclick="window.location='/register/';">Register</button>
+    </div>
+<!-- -->
+{% endblock %}

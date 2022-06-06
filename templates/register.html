@@ -1,0 +1,42 @@
+{% extends 'template_to_inherit.html' %}
+
+{% block head %}
+<title>Login Page</title>
+<script type="text/javascript" src="{{ url_for('static', filename='jscripts/main.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div id="register_form_full">
+            <h1 style="text-align: center">Input Desired Username and Password to Register</h1>
+
+            <div class = "register_form" style="text-align: center;">
+                <form action="/register/" method="POST">
+                    <label for="username">Username:</label><br>
+                    <input type="text" name="username" required><br>
+                    <label for="password">Password (at least 6 characters):</label><br>
+                    <input type="password" name="password" minlength="6" required><br>
+                    <label for="password_repeat">Confirm Password (match the password field):</label><br>
+                    <input type="password" name="password_repeat" minlength="6" required><br>
+                    <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
+                </form>
+            </div>
+
+            <div id="register_failed" style="text-align: center"></div>
+    </div>
+    <br>
+
+    <script type="text/javascript">
+    {
+        authFail( {{ flag_reg }}, "register_failed",  "{{ my_message }}" );
+    }
+    </script>
+
+    <br> <br> <br>
+    <p><strong>Already a registered user?<br>Click the button below to be redirected to the login page!</strong></p>
+    <div id="button1" style="text-align: center;">
+        <button type="button" id="login_button" onclick="window.location='/login/';">Login</button>
+    </div>
+
+<!-- -->
+{% endblock %}

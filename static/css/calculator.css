@@ -1,0 +1,25 @@
+.calculator {
+  margin: 0 auto;
+  margin-top: 50px;
+
+}
+
+.calculator th, .calculator td {
+  background-color:#4169E1;
+  padding: 22px;
+
+}
+
+
+.calculator input[type=button] {
+  background-color:#DDA0DD;
+  padding: 20px 25px;
+  font-weight: bolder;
+  font-size: 150%;
+}
+
+#calc_screen {
+  background-color: hsl(60, 50%, 50%);
+  padding: 35px;
+  font-size: 175%;
+}
