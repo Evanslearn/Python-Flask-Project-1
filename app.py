@@ -17,6 +17,7 @@
 # thus, we followed this convention in this program folders' structure
 # ---------------------------------------------------------------------------------------
 from libraries import *
+from forms import *
 
 
 app = Flask(__name__)  # referencing this file
@@ -26,6 +27,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -49,9 +51,17 @@ def create_tables():
 # ----- ----- ----- ----- HOME ----- ----- ----- -----
 @app.route('/', methods=['POST','GET'])
 def home():
+    name = None
+    form = NameForm()
+
     if request.method == 'POST':
-        task_name = request.form['name']
-        new_task = MyTask(name=task_name)
+        # Validate our form
+        if form.validate_on_submit():
+            name = form.name.data
+            form.name.data = ''
+            flash("Name added successfully")
+        #task_name = request.form['name']
+        new_task = MyTask(name=name)
 
         try:
             db.session.add(new_task)
@@ -61,7 +71,9 @@ def home():
             return 'Encountered an error while adding'
     else:
         tasks = MyTask.query.order_by(MyTask.date_created).all()
-        return render_template('home.html', tasks=tasks)  # It knows it's in the template folder
+        return render_template('home.html', tasks=tasks,
+                               name = name,
+                               form = form)  # It knows it's in the template folder
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -69,9 +81,16 @@ def home():
 @app.route('/update/name/<int:id>', methods=['GET','POST'])
 def update(id):
     task = MyTask.query.get_or_404(id)
+    name = None
+    form = NameForm()
+
 
     if request.method == 'POST':
-        task.name = request.form['name']
+        # Validate our form
+        if form.validate_on_submit():
+            name = form.name.data
+            form.name.data = ''
+        task.name = name
 
         try:
             db.session.commit()
@@ -79,7 +98,9 @@ def update(id):
         except:
             return "Encountered error while updating"
     else:
-        return render_template('update_name.html', task=task)
+        return render_template('update_name.html', task=task,
+                               name = name,
+                               form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -87,9 +108,16 @@ def update(id):
 @app.route('/update/address/<int:id>', methods=['GET','POST'])
 def test(id):
     task = MyTask.query.get_or_404(id)
+    address = None
+    form = AddressForm()
 
     if request.method == 'POST':
-        task.email_address = request.form.get('email_address')
+        # Validate our form
+        if form.validate_on_submit():
+            address = form.address.data
+            form.address.data = ''
+        task.email_address = address
+        #task.email_address = request.form.get('email_address')
 
         try:
             db.session.commit()
@@ -97,10 +125,13 @@ def test(id):
         except:
             return 'Encountered an error while adding address'
     else:
-        return render_template('update_address.html', task=task)  # It knows it's in the template folder
+        return render_template('update_address.html', task=task,
+                               address = address,
+                               form = form)  # It knows it's in the template folder
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
+# Tring to make a blueprint for deleting db enties (task, user, etc)
 #def delete(MyClass, id, url):
 #    entry_to_delete = MyClass.query.get_or_404(id)
 #
@@ -123,34 +154,52 @@ def delete_task(id):
     except:
         return "Encountered error while deleting task"
 
-# -------------------------------------------------------------------------------------------------------------------- #
-# -------------------------------------------------------------------------------------------------------------------- #
-# -------------------------------------------------------------------------------------------------------------------- #
 
-
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
+# -------------------------------------------------------------------------------------------------------------------- #
 # ----- ----- ----- ----- ----- ----- ----- -----
 # ----- ----- ----- ----- REGISTER ----- ----- ----- -----
 @app.route('/register/', methods=['POST','GET'])
 def register():
     flag_reg = 1  # This is used for showing login error message
-    if request.method == 'POST':
-        user_username = request.form.get('username')
-        user_password = request.form.get('password')
-        user_password_repeat = request.form.get('password_repeat')
+    username = None
+    password = None
+    password_repeat = None
+    form = RegisterForm()
 
-        user = User.query.filter_by(username=user_username).first()
+    if request.method == 'POST':
+
+        # Validate our form
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            password_repeat = form.password_repeat.data
+            form.username.data = ''
+            form.password.data = ''
+            form.password_repeat.data = ''
+
+        #user_username = request.form.get('username')
+        #user_password = request.form.get('password')
+        #user_password_repeat = request.form.get('password_repeat')
+
+        user = User.query.filter_by(username=username).first()
         # If username exists, we cannot register the new user with said username
         if user is not None:
             my_message = 'This username is already taken. Please select another one.'
-            return render_template('register.html', flag_reg = flag_reg, my_message = my_message)
+            return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
+                                   username=username,
+                                   password=password,
+                                   password_repeat=password_repeat,
+                                   form=form)
         # If the username does not already exist
         else:
 
             # If the 2 password fields match
-            if user_password == user_password_repeat:
+            if password == password_repeat:
                 new_user = User()
-                new_user.username = user_username
-                new_user.password = user_password # The hashing is done by our password setter attribute method
+                new_user.username = username
+                new_user.password = password # The hashing is done by our password setter attribute method
 
                 try:
                     db.session.add(new_user)
@@ -161,11 +210,19 @@ def register():
                     return 'Encountered an error while registering'
             else:
                 my_message = "The two password fields did not match."
-                return render_template('register.html', flag_reg = flag_reg, my_message = my_message)
+                return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
+                                       username=username,
+                                       password=password,
+                                       password_repeat=password_repeat,
+                                       form=form)
     flag_reg = 0  # We don't want the error message to be displayed on refresh
     print("flag reg= ", flag_reg)
     my_message = "Refreshed register.html"
-    return render_template('register.html', flag_reg=flag_reg, my_message = my_message)
+    return render_template('register.html', flag_reg=flag_reg, my_message = my_message,
+                           username = username,
+                           password = password,
+                           password_repeat = password_repeat,
+                           form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
