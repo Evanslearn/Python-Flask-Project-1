@@ -27,13 +27,36 @@ You can set style="display: none" in the div-->
         <h1 style="text-align: center">Input Username and Password to Login</h1>
 
         <div class = "login_form" style="text-align: center;">
+            <!---
             <form action="/login/" method="POST">
                 <label for="username">Username:</label><br>
                 <input type="text" name="username" required><br>
                 <label for="password">Password (at least 6 characters):</label><br>
                 <input type="password" name="password" minlength="6" required><br>
                 <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
-            </form>
+            </form>-->
+            <form action="/login/" method="POST">
+                    {{ form.hidden_tag() }}
+
+                    {{ form.username.label(
+                    class='form-label') }}
+                    </br>
+
+                    {{ form.username(
+                    class='form-control') }}
+                    </br>
+
+                    {{ form.password.label(
+                    class='form-label') }}
+                    </br>
+
+                    {{ form.password(
+                    class='form-control') }}
+                    </br>
+
+                    {{ form.submit(
+                    class='btn-btn-primary') }}
+                </form>
         </div>
 
         <div id="login_failed" style="text-align: center"></div>

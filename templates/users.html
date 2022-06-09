@@ -8,7 +8,7 @@
 <div class="content">
     <h1 style="text-align: center;">Users Credentials</h1>
     <hr color="teal">
-    {% if users|length < 1 %} <!-- if there are no entries show the header below -->
+    {% if allusers|length < 1 %} <!-- if there are no entries show the header below -->
         <p style="font-size: 150%; color: red; text-align: center">There are no users...</p>
 
     {% else %}
@@ -23,7 +23,7 @@
                 <th>Actions</th>
             </tr>
 
-            {% for user in users %}
+            {% for user in allusers %}
                 <tr> <!-- Elements Row(s) -->
                     <td>{{ user.id }}</td>
                     <td>{{ user.username }}</td>

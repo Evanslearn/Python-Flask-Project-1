@@ -84,7 +84,6 @@ def update(id):
     name = None
     form = NameForm()
 
-
     if request.method == 'POST':
         # Validate our form
         if form.validate_on_submit():
@@ -206,7 +205,7 @@ def register():
                     db.session.commit()
                     return redirect('/login/')
                 except:
-                    print("not found. flag reg =", flag_reg)
+                    print(f"not found. flag reg = {flag_reg}")
                     return 'Encountered an error while registering'
             else:
                 my_message = "The two password fields did not match."
@@ -216,7 +215,7 @@ def register():
                                        password_repeat=password_repeat,
                                        form=form)
     flag_reg = 0  # We don't want the error message to be displayed on refresh
-    print("flag reg= ", flag_reg)
+    print(f"flag reg= {flag_reg}")
     my_message = "Refreshed register.html"
     return render_template('register.html', flag_reg=flag_reg, my_message = my_message,
                            username = username,
@@ -230,23 +229,35 @@ def register():
 @app.route('/login/', methods=['POST','GET'])
 def login():
     flag_login = 1  # This is used for showing login error message
+    username = None
+    password = None
+    form = LoginForm()
+
     if request.method == 'POST':
-        user_username = request.form.get('username')
-        user_password = request.form.get('password')
+
+        # Validate our form
+        if form.validate_on_submit():
+            username = form.username.data
+            password = form.password.data
+            form.username.data = ''
+            form.password.data = ''
+
+            #user_username = request.form.get('username')
+            #user_password = request.form.get('password')
 
         try:
             # We try to find if the username is registered in our database
-            user = User.query.filter_by(username=user_username).first()
+            user = User.query.filter_by(username=username).first()
 
             if user is not None:  # If username exists, we should also check the password
-                print("User Found. ->", user, "\nProvide the matching password...\n...")
+                print(f"User Found. -> {user}.\nProvide the matching password...\n...")
 
                 # If password (when hashed), matches the stored password hash
-                if user.verify_password(user_password):
+                if user.verify_password(password):
 
                     # We keep track of which user logged in, and when
-                    print("Access granted to ", user)
-                    new_login = LoginTrace(username=user_username)
+                    print(f"Access granted to {user}")
+                    new_login = LoginTrace(username=username)
                     db.session.add(new_login)
                     db.session.commit()
                     login_user(user)
@@ -254,18 +265,27 @@ def login():
                     return redirect('/profile/')
                 else:
                     my_message = "The password does not match this username"
-                    return render_template('login.html', flag_login = flag_login, my_message = my_message)
+                    return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                                           username = username,
+                                           password = password,
+                                           form = form)
             else:
-                print("not found. flag login =", flag_login)
+                print(f"not found. flag login = {flag_login}")
                 my_message = "Username not found. Please check your spelling, or register."
-                return render_template('login.html', flag_login = flag_login, my_message = my_message)
+                return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                                       username = username,
+                                       password = password,
+                                       form = form)
 
         except:
-            print( 'Encountered an error while logging in')
+            print('Encountered an error while logging in')
     flag_login = 0  # We don't want the error message to be displayed on refresh
-    print("flag login = ",flag_login)
+    print(f"flag login = {flag_login}")
     my_message = "Refreshed login.html"
-    return render_template('login.html', flag_login = flag_login, my_message = my_message)
+    return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                           username = username,
+                           password = password,
+                           form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -276,7 +296,8 @@ def logout():
     logout_user()
     my_message = "You have been logged out"
     flag_login = 1
-    return render_template('login.html', flag_login = flag_login, my_message = my_message)
+    return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                           form = LoginForm())
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -287,6 +308,12 @@ def profile():
     user = User.query.filter_by(username=current_user.username).first()
     profile_found = Profile.query.filter_by(username=user.username, user=user).first()
     # If we do not find profile entry in profile db, we create the entry
+
+    description = None
+    form = DescriptionForm()
+    myshare = None
+    form1 = PostForm()
+
     if profile_found:
         pass
     else:
@@ -295,41 +322,62 @@ def profile():
         db.session.commit()
 
     if request.method == 'POST':
-        print(request.form)
-        if 'description' in request.form or 'description_update' in request.form:
-            profile_description = request.form.get('description_update')
-            print('Description: ',request.form.get('description_update'))
-            profile_add_description = request.form.get('description')
-            print('Description to add: ', request.form.get('description'))
+        print(f"request.form -> {request.form}")
+
+        if 'description' in request.form:
+
+            # Validate our form
+            if form.validate_on_submit():
+                description = form.description.data
+                form.description.data = ''
 
             try:
 
                 if profile_found:
-                    profile_found.description = profile_description
+                    profile_found.description = description
                     db.session.commit()
-                    # print(profile_found.user.password_hash)      profile_found.user.x -> access to attribute x of user
-                    return render_template('profile.html', id = user.id, description0 = profile_found.description)
+                    return render_template('profile.html', id = user.id, description0 = profile_found.description,
+                                           description = description,
+                                           form = form,
+                                           myshare = myshare,
+                                           form1 = form1)
                 else:
-                    profile_add.description = profile_add_description
+                    profile_add.description = description
                     db.session.add(profile_add)
                     db.session.commit()
-                    return render_template('profile.html', id = user.id, description0 = profile_add.description)
+                    return render_template('profile.html', id = user.id, description0 = profile_add.description,
+                                           description = description,
+                                           form = form,
+                                           myshare = myshare,
+                                           form1 = form1)
             except:
                 print("Encountered an error while updating profile information")
-        elif request.form.get('share_post'):
-            profile_post = request.form.get('share_post')
-            print("My post is : ",profile_post)
-            mypost = Posts(username=user.username, content=profile_post)
+        elif 'myshare' in request.form:
+
+            # Validate our form
+            if form1.validate_on_submit():
+                myshare = form1.myshare.data
+                form1.myshare.data = ''
+
+            #profile_post = request.form.get('share_post')
+            print(f'My post is : {myshare}')
+            mypost = Posts(username=user.username, content=myshare)
 
             try:
 
-                    db.session.add(mypost)
-                    db.session.commit()
-                    posts = Posts.query.filter_by(username=user.username).all()
-                    return render_template('profile.html', id = user.id, description0 = profile_found.description, posts=posts)
+                db.session.add(mypost)
+                db.session.commit()
+                posts = Posts.query.filter_by(username=user.username).all()
+                return redirect('/profile/')
+                #return render_template('profile.html', id = user.id, description0 = profile_found.description, posts=posts,
+                 #                      description = description,
+                #                       form = form,
+                 #                      myshare = myshare,
+                #                       form1 = form1)
 
             except:
-                print("Encountered an error while posting")
+                print('Encountered an error while posting')
+        """"""
 
     id = current_user.id
     description0 = 'null'
@@ -337,12 +385,16 @@ def profile():
     myposts = Posts.query.filter_by(username=user.username).all()
     if profile_found:
         id = user.id
-    if profile_found.description != None:
+    if profile_found.description is not None:
         description0 = profile_found.description
     if myposts:
         posts = myposts
-    print(user)
-    return render_template('profile.html', id = id, description0 = description0, posts = posts)  # It knows it's in the template folder
+    print("hello")
+    return render_template('profile.html', id = id, description0 = description0, posts = posts,
+                           description = description,
+                           form = form,
+                           myshare = myshare,
+                           form1 = form1)  # It knows it's in the template folder
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -350,8 +402,8 @@ def profile():
 @app.route('/users/', methods=['POST','GET'])
 @login_required
 def users():
-    users = User.query.order_by(User.date_created).all()
-    return render_template('users.html', users=users)  # It knows it's in the template folder
+    allusers = User.query.order_by(User.date_created).all()
+    return render_template('users.html', allusers=allusers)  # It knows it's in the template folder
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -435,7 +487,7 @@ class Profile(db.Model):
     # Return string everytime we create new element
     def __repr__(self):
         return '<User %r>' % self.id
-
+# profile.user.x -> access to attribute x of user
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
