@@ -10,8 +10,10 @@
 {% if current_user.is_authenticated %}
 {% if id == current_user.id %}
 
-<div class="split left" id = "profile0">
-    <div class="centered">
+
+<div class="row">
+    <div class="col m-2" class="split left" id = "profile0">
+
         <h2>Greetings!<br> Your Basic information is here: </h2>
            <ul>
                <li> <strong>Username:</strong> {{ current_user.username }}</li>
@@ -29,20 +31,19 @@
             <input type="submit" value="Update Description">
         </form> -->
         <form action="/profile/" method="POST">
-                    {{ form.hidden_tag() }}
+            {{ form.hidden_tag() }}
 
-                    {{ form.description.label(
-                    class='form-label') }}
-                    </br>
+            {{ form.description.label(
+            class='form-label') }}
+            </br>
 
-                    {{ form.description(
-                    class='form-control') }}
-                    </br>
+            {{ form.description(
+            class='form-control') }}
+            </br>
 
-                    {{ form.submit(
-                    class='btn-btn-primary') }}
+            {{ form.submit(
+            class='btn btn-primary') }}
         </form>
-
         {% else %}
         <h3>Profile Description: </h3>
         <p>{{ description0 }}</p>
@@ -55,24 +56,23 @@
             <input type="submit" value="Update Description">
         </form>-->
         <form action="/profile/" method="POST">
-                    {{ form.hidden_tag() }}
+            {{ form.hidden_tag() }}
 
-                    {{ form.description.label(
-                    class='form-label') }}
-                    </br>
+            {{ form.description.label(
+            class='form-label') }}
+            </br>
 
-                    {{ form.description(
-                    class='form-control') }}
-                    </br>
+            {{ form.description(
+            class='form-control') }}
+            </br>
 
-                    {{ form.submit(
-                    class='btn-btn-primary') }}
+            {{ form.submit(
+            class='btn btn-primary') }}
         </form>
         {% endif %}
     </div>
-</div>
 
-<div class="split right" id ="myposts0">
+    <div class="col m-2" class="split right" id ="myposts0">
     <!--div class="centered"-->
         <h2>Dear {{ current_user.username }},<br> Something on your mind you need to share? </h2>
             <!--
@@ -82,19 +82,19 @@
                 <input type="submit" value="Share."/>
             </form>  -->
 
-            <form action="/profile/" method="POST">
-                    {{ form1.hidden_tag() }}
+        <form action="/profile/" method="POST">
+            {{ form1.hidden_tag() }}
 
-                    {{ form1.myshare.label(
-                    class='form-label') }}
-                    </br>
+            {{ form1.myshare.label(
+            class='form-label') }}
+            </br>
 
-                    {{ form1.myshare(
-                    class='form-control') }}
-                    </br>
+            {{ form1.myshare(
+            class='form-control') }}
+            </br>
 
-                    {{ form1.submit(
-                    class='btn-btn-primary') }}
+            {{ form1.submit(
+            class='btn btn-primary') }}
         </form>
 
         <ul>
@@ -103,7 +103,10 @@
             {% endfor %}
         </ul>
     <!--/div-->
+    </div>
+
 </div>
+
 
 
 

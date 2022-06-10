@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
 
 
 class DescriptionForm(FlaskForm):
-    description = TextAreaField("description", render_kw={"rows": 10, "cols": 40}, validators=[DataRequired()])
+    description = TextAreaField("Description", render_kw={"rows": 10, "cols": 40}, validators=[DataRequired()])
     submit = SubmitField("Update Description")
 
 

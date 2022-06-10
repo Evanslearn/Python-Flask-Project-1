@@ -8,51 +8,51 @@
 {% block body %}
 
     <div id="register_form_full">
-            <h1 style="text-align: center">Input Desired Username and Password to Register</h1>
+        <h1 style="text-align: center">Input Desired Username and Password to Register</h1>
 
-            <div class = "register_form" style="text-align: center;">
-              <!--  <form action="/register/" method="POST">
-                    <label for="username">Username:</label><br>
-                    <input type="text" name="username" required><br>
-                    <label for="password">Password (at least 6 characters):</label><br>
-                    <input type="password" name="password" minlength="6" required><br>
-                    <label for="password_repeat">Confirm Password (match the password field):</label><br>
-                    <input type="password" name="password_repeat" minlength="6" required><br>
-                    <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
-                </form>-->
-                <form action="/register/" method="POST">
-                    {{ form.hidden_tag() }}
+        <div class="register_form d-flex justify-content-center" style="text-align: center;">
+          <!--  <form action="/register/" method="POST">
+                <label for="username">Username:</label><br>
+                <input type="text" name="username" required><br>
+                <label for="password">Password (at least 6 characters):</label><br>
+                <input type="password" name="password" minlength="6" required><br>
+                <label for="password_repeat">Confirm Password (match the password field):</label><br>
+                <input type="password" name="password_repeat" minlength="6" required><br>
+                <input type="submit" value="Submit" style="background-color: hsl(340, 20%, 65%);">
+            </form>-->
+            <form action="/register/" method="POST">
+                {{ form.hidden_tag() }}
 
-                    {{ form.username.label(
-                    class='form-label') }}
-                    </br>
+                {{ form.username.label(
+                class='form-label') }}
+                </br>
 
-                    {{ form.username(
-                    class='form-control') }}
-                    </br>
+                {{ form.username(
+                class='form-control') }}
+                </br>
 
-                    {{ form.password.label(
-                    class='form-label') }}
-                    </br>
+                {{ form.password.label(
+                class='form-label') }}
+                </br>
 
-                    {{ form.password(
-                    class='form-control') }}
-                    </br>
+                {{ form.password(
+                class='form-control') }}
+                </br>
 
-                    {{ form.password_repeat.label(
-                    class='form-label') }}
-                    </br>
+                {{ form.password_repeat.label(
+                class='form-label') }}
+                </br>
 
-                    {{ form.password_repeat(
-                    class='form-control') }}
-                    </br>
+                {{ form.password_repeat(
+                class='form-control') }}
+                </br>
 
-                    {{ form.submit(
-                    class='btn-btn-primary') }}
-                </form>
-            </div>
+                {{ form.submit(
+                class='btn btn-primary') }}
+            </form>
+        </div>
 
-            <div id="register_failed" style="text-align: center"></div>
+        <div id="register_failed" style="text-align: center"></div>
     </div>
     <br>
 
@@ -63,10 +63,9 @@
     </script>
 
     <br> <br> <br>
-    <p><strong>Already a registered user?<br>Click the button below to be redirected to the login page!</strong></p>
     <div id="button1" style="text-align: center;">
-        <button type="button" id="login_button" onclick="window.location='/login/';">Login</button>
+        <p><strong>Already a registered user?<br>Click the button below to be redirected to the login page!</strong></p>
+        <button type="button" class="btn btn-success" id="login_button" onclick="window.location='/login/';">Login</button>
     </div>
-
 <!-- -->
 {% endblock %}

@@ -60,7 +60,7 @@ def home():
             name = form.name.data
             form.name.data = ''
             flash("Name added successfully")
-        #task_name = request.form['name']
+
         new_task = MyTask(name=name)
 
         try:
@@ -89,6 +89,7 @@ def update(id):
         if form.validate_on_submit():
             name = form.name.data
             form.name.data = ''
+            flash("Name updated successfully")
         task.name = name
 
         try:
@@ -115,6 +116,7 @@ def test(id):
         if form.validate_on_submit():
             address = form.address.data
             form.address.data = ''
+            flash("Address updated successfully")
         task.email_address = address
         #task.email_address = request.form.get('email_address')
 
@@ -149,6 +151,7 @@ def delete_task(id):
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
+        flash("Name Deleted successfully")
         return redirect('/')
     except:
         return "Encountered error while deleting task"
@@ -186,6 +189,7 @@ def register():
         # If username exists, we cannot register the new user with said username
         if user is not None:
             my_message = 'This username is already taken. Please select another one.'
+            flash(my_message)
             return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
                                    username=username,
                                    password=password,
@@ -203,12 +207,14 @@ def register():
                 try:
                     db.session.add(new_user)
                     db.session.commit()
+                    flash("User Registered successfully")
                     return redirect('/login/')
                 except:
                     print(f"not found. flag reg = {flag_reg}")
                     return 'Encountered an error while registering'
             else:
                 my_message = "The two password fields did not match."
+                flash(my_message)
                 return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
                                        username=username,
                                        password=password,
@@ -262,9 +268,11 @@ def login():
                     db.session.commit()
                     login_user(user)
 
+                    flash("Access granted to user")
                     return redirect('/profile/')
                 else:
                     my_message = "The password does not match this username"
+                    flash(my_message)
                     return render_template('login.html', flag_login = flag_login, my_message = my_message,
                                            username = username,
                                            password = password,
@@ -272,6 +280,7 @@ def login():
             else:
                 print(f"not found. flag login = {flag_login}")
                 my_message = "Username not found. Please check your spelling, or register."
+                flash(my_message)
                 return render_template('login.html', flag_login = flag_login, my_message = my_message,
                                        username = username,
                                        password = password,
@@ -295,6 +304,7 @@ def login():
 def logout():
     logout_user()
     my_message = "You have been logged out"
+    flash(my_message)
     flag_login = 1
     return render_template('login.html', flag_login = flag_login, my_message = my_message,
                            form = LoginForm())
@@ -336,20 +346,24 @@ def profile():
                 if profile_found:
                     profile_found.description = description
                     db.session.commit()
-                    return render_template('profile.html', id = user.id, description0 = profile_found.description,
-                                           description = description,
-                                           form = form,
-                                           myshare = myshare,
-                                           form1 = form1)
+                    flash("Description Updated")
+                    return redirect('/profile/')
+                    #return render_template('profile.html', id = user.id, description0 = profile_found.description,
+                    #                       description = description,
+                    #                       form = form,
+                     #                      myshare = myshare,
+                     #                      form1 = form1)
                 else:
                     profile_add.description = description
                     db.session.add(profile_add)
                     db.session.commit()
-                    return render_template('profile.html', id = user.id, description0 = profile_add.description,
-                                           description = description,
-                                           form = form,
-                                           myshare = myshare,
-                                           form1 = form1)
+                    flash("Description Added")
+                    return redirect('/profile/')
+                    #return render_template('profile.html', id = user.id, description0 = profile_add.description,
+                    #                       description = description,
+                    #                       form = form,
+                     #                      myshare = myshare,
+                     #                      form1 = form1)
             except:
                 print("Encountered an error while updating profile information")
         elif 'myshare' in request.form:
@@ -368,6 +382,7 @@ def profile():
                 db.session.add(mypost)
                 db.session.commit()
                 posts = Posts.query.filter_by(username=user.username).all()
+                flash("Post Shared")
                 return redirect('/profile/')
                 #return render_template('profile.html', id = user.id, description0 = profile_found.description, posts=posts,
                  #                      description = description,
@@ -385,8 +400,8 @@ def profile():
     myposts = Posts.query.filter_by(username=user.username).all()
     if profile_found:
         id = user.id
-    if profile_found.description is not None:
-        description0 = profile_found.description
+        if profile_found.description is not None:
+            description0 = profile_found.description
     if myposts:
         posts = myposts
     print("hello")
@@ -415,6 +430,7 @@ def delete_user(id):
     try:
         db.session.delete(user_to_delete)
         db.session.commit()
+        flash("User Deleted Successfully")
         return redirect('/users/')
     except:
         return "Encountered error while deleting user"
@@ -433,6 +449,7 @@ def toolbox():
 @app.route('/toolbox/calculator/')
 def calculator():
 
+    flash("C\'mon... Do math!")
     return render_template('calculator.html')
 
 

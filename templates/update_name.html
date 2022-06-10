@@ -1,29 +1,28 @@
 {% extends 'template_to_inherit.html' %}
 
 {% block head %}
-<title>Update Page</title>
+<title>Update Name ID {{task.id}}</title>
 {% endblock %}
 
 {% block body %}
-    <div class="content">
-        <h1 style="text-align: center">Update Name {{task.id}}</h1>
+    <h1 style="text-align: center">Update Name {{task.id}}</h1>
+    <div class="d-flex justify-content-center" style="text-align: center;">
+        <form action="/update/name/{{task.id}}" method="POST">
+        {{ form.hidden_tag() }}
 
-        <div class = "button_update_name">
-            <form action="/update/name/{{task.id}}" method="POST">
-            {{ form.hidden_tag() }}
+        {{ form.name.label(
+        class='form-label') }}
+        <br>
 
-            {{ form.name.label(
-            class='form-label') }}
-            <br>
+        {{ form.name(value=task.name,
+        class='form-control col-sm-20') }}
+        </br>
 
-            {{ form.name(value=task.name,
-            class='form-control') }}
-            </br>
-            {{ form.submit(
-            class='btn-btn-primary') }}
-            </form>
-        </div>
+        {{ form.submit(
+        class='btn btn-primary') }}
+        </form>
     </div>
+
 
     <!--<div w3-include-html="button_back.html"></div> -->
 
