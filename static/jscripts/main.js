@@ -1,3 +1,17 @@
+function disappear(myID) {
+  var myID;
+  var delay = 1500;
+
+  setTimeout(myDisappear, delay, myID);
+}
+
+function myDisappear(myID) {
+  var myID;
+  var element = document.getElementById(myID);
+  element.style.display = 'none';
+}
+
+/*
 function loginForm(myID) {
     var x = document.getElementById(myID);
 
@@ -9,8 +23,9 @@ function loginForm(myID) {
     }
 
 }
+*/
 
-
+/*
 function authFail(flag, myID, myMessage) {
     var flag, myID, myMessage;
     if (flag == 1) {
@@ -34,5 +49,5 @@ function updateText(myID) {
     window.alert(input);
 }
 
-
+*/
 

@@ -22,8 +22,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/topnav.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
      -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/calculator.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favic.png') }}"> <!-- a favicon -->
+
+    <!-- our javascript files -->
+    <script type="text/javascript" src="{{ url_for('static', filename='jscripts/main.js') }}"></script>
 
     <!-- by using the {{ x }} symbolism, we can show the python variable x on our html page
     <!-- TOP NAVIGATION BAR -->
@@ -32,7 +34,7 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav" style="font-weight: bold;">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
@@ -62,20 +64,37 @@
 
     {% block head %}
 
+
     {% endblock %}  <!--Where we insert our code for other templates-->
 </head>
 
 <body>
+    <!-- Without this div, the page is a bit longer than default width. This happens, because Bootstrap row has left and right margin -15px -->
+    <div class="container">
+
     {% for message in get_flashed_messages() %}
-        <div class="row d-flex justify-content-center" style="text-align: center;">
-            <div class="alert alert-warning alert-dismissible fade show col-md-4 col-md-offset-4" role="alert">
+        <div class="row d-flex justify-content-center " style="text-align: center;">
+            <div class="alert alert-warning alert-dismissible fade show col-md-4 col-md-offset-4" role="alert" id="myflasher">
               {{ message }}
+
+                <!-- We also make the message disappear after a short while -->
+                <script type="text/javascript">
+                {
+                    disappear("myflasher");
+                }
+                </script>
+
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
         </div>
     {% endfor %}
+
+
+    </div>
+
+
 
     {% block body %}
 

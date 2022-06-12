@@ -190,11 +190,12 @@ def register():
         if user is not None:
             my_message = 'This username is already taken. Please select another one.'
             flash(my_message)
-            return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
-                                   username=username,
-                                   password=password,
-                                   password_repeat=password_repeat,
-                                   form=form)
+            return redirect('/register/')
+            #return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
+            #                       username=username,
+            #                       password=password,
+            #                       password_repeat=password_repeat,
+            #                       form=form)
         # If the username does not already exist
         else:
 
@@ -215,11 +216,12 @@ def register():
             else:
                 my_message = "The two password fields did not match."
                 flash(my_message)
-                return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
-                                       username=username,
-                                       password=password,
-                                       password_repeat=password_repeat,
-                                       form=form)
+                return redirect('/register/')
+                #return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
+                #                       username=username,
+                #                       password=password,
+                #                       password_repeat=password_repeat,
+                #                       form=form)
     flag_reg = 0  # We don't want the error message to be displayed on refresh
     print(f"flag reg= {flag_reg}")
     my_message = "Refreshed register.html"
@@ -273,18 +275,20 @@ def login():
                 else:
                     my_message = "The password does not match this username"
                     flash(my_message)
-                    return render_template('login.html', flag_login = flag_login, my_message = my_message,
-                                           username = username,
-                                           password = password,
-                                           form = form)
+                    return redirect('/login/')
+                    #return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                    #                       username = username,
+                    #                       password = password,
+                    #                       form = form)
             else:
                 print(f"not found. flag login = {flag_login}")
                 my_message = "Username not found. Please check your spelling, or register."
                 flash(my_message)
-                return render_template('login.html', flag_login = flag_login, my_message = my_message,
-                                       username = username,
-                                       password = password,
-                                       form = form)
+                return redirect('/login/')
+                #return render_template('login.html', flag_login = flag_login, my_message = my_message,
+                #                       username = username,
+                #                       password = password,
+                 #                      form = form)
 
         except:
             print('Encountered an error while logging in')
@@ -323,6 +327,8 @@ def profile():
     form = DescriptionForm()
     myshare = None
     form1 = PostForm()
+    mynote = None
+    form2 = NoteForm()
 
     if profile_found:
         pass
@@ -366,8 +372,26 @@ def profile():
                      #                      form1 = form1)
             except:
                 print("Encountered an error while updating profile information")
-        elif 'myshare' in request.form:
+        elif 'mynote' in request.form:
+            # Validate our form
+            if form2.validate_on_submit():
+                mynote = form2.mynote.data
+                form2.mynote.data = ''
 
+            print(f'My note is : {mynote}')
+            newnote = Notes(username=user.username, content=mynote)
+
+            try:
+
+                db.session.add(newnote)
+                db.session.commit()
+                notes = Notes.query.filter_by(username=user.username).all()
+                flash("Note Taken")
+                return redirect('/profile/')
+
+            except:
+                print('Encountered an error while taking note')
+        elif 'myshare' in request.form:
             # Validate our form
             if form1.validate_on_submit():
                 myshare = form1.myshare.data
@@ -375,11 +399,11 @@ def profile():
 
             #profile_post = request.form.get('share_post')
             print(f'My post is : {myshare}')
-            mypost = Posts(username=user.username, content=myshare)
+            newpost = Posts(username=user.username, content=myshare)
 
             try:
 
-                db.session.add(mypost)
+                db.session.add(newpost)
                 db.session.commit()
                 posts = Posts.query.filter_by(username=user.username).all()
                 flash("Post Shared")
@@ -392,24 +416,29 @@ def profile():
 
             except:
                 print('Encountered an error while posting')
-        """"""
 
     id = current_user.id
     description0 = 'null'
     posts = 'null'
     myposts = Posts.query.filter_by(username=user.username).all()
+    notes = 'null'
+    mynotes = Notes.query.filter_by(username=user.username).all()
     if profile_found:
         id = user.id
         if profile_found.description is not None:
             description0 = profile_found.description
     if myposts:
         posts = myposts
+    if mynotes:
+        notes = mynotes
     print("hello")
-    return render_template('profile.html', id = id, description0 = description0, posts = posts,
+    return render_template('profile.html', id = id, description0 = description0, posts = posts, notes = notes,
                            description = description,
                            form = form,
+                           mynote = mynote,
+                           form2=form2,
                            myshare = myshare,
-                           form1 = form1)  # It knows it's in the template folder
+                           form1 = form1)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -506,10 +535,19 @@ class Profile(db.Model):
         return '<User %r>' % self.id
 # profile.user.x -> access to attribute x of user
 
+
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     content = db.Column(db.String(250))
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Notes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.String(250))
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class LoginTrace(db.Model):

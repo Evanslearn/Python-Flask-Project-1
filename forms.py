@@ -27,10 +27,15 @@ class LoginForm(FlaskForm):
 
 
 class DescriptionForm(FlaskForm):
-    description = TextAreaField("Description", render_kw={"rows": 10, "cols": 40}, validators=[DataRequired()])
+    description = TextAreaField("Description", render_kw={"rows": 10, "cols": 32}, validators=[DataRequired()])
     submit = SubmitField("Update Description")
 
 
 class PostForm(FlaskForm):
-    myshare = StringField("Share Your Thoughts!", validators=[DataRequired()])
+    myshare = TextAreaField("Share Your Thoughts!", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
     submit = SubmitField("Share")
+
+
+class NoteForm(FlaskForm):
+    mynote = TextAreaField("Track a Note:", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
+    submit = SubmitField("Post Note")

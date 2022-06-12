@@ -10,103 +10,145 @@
 {% if current_user.is_authenticated %}
 {% if id == current_user.id %}
 
+<!-- Without this div, the page is a bit longer than default width. This happens, because Bootstrap row has left and right margin -15px -->
+<div class="container-fluid"> <!-- Container fluid -->
 
-<div class="row">
-    <div class="col m-2" class="split left" id = "profile0">
+    <div class="row"> <!-- Row -->
+        <div class="col m-2" class="split left" id = "profile0">
 
-        <h2>Greetings!<br> Your Basic information is here: </h2>
-           <ul>
-               <li> <strong>Username:</strong> {{ current_user.username }}</li>
-               <li> <strong>User ID:</strong> {{ current_user.id }}</li>
-               <li> <strong>Date Registered:</strong> {{ current_user.date_created }}</li>
-           </ul>
+            <h2>Greetings!<br> Your Basic information is here: </h2>
+               <ul>
+                   <li> <strong>Username:</strong> {{ current_user.username }}</li>
+                   <li> <strong>User ID:</strong> {{ current_user.id }}</li>
+                   <li> <strong>Date Registered:</strong> {{ current_user.date_created }}</li>
+               </ul>
 
-        {% if description0 == 'null' %}
-        <h4>Add a short profile descriptions below:</h4>
-        <!--
-        <form action="/profile/" method="POST">
-            <label for="description"></label>
-            <textarea id="description" cols="40" rows="10" placeholder="Please write a short description"></textarea>
-            <br>
-            <input type="submit" value="Update Description">
-        </form> -->
-        <form action="/profile/" method="POST">
-            {{ form.hidden_tag() }}
-
-            {{ form.description.label(
-            class='form-label') }}
-            </br>
-
-            {{ form.description(
-            class='form-control') }}
-            </br>
-
-            {{ form.submit(
-            class='btn btn-primary') }}
-        </form>
-        {% else %}
-        <h3>Profile Description: </h3>
-        <p>{{ description0 }}</p>
-        <h4>Update your profile descriptions below:</h4>
-        <!--
-        <form action="/profile/" method="POST">
-            <label for="description_update"></label>
-            <textarea id="description_update" cols="40" rows="10">{{ description0 }}</textarea>
-            <br>
-            <input type="submit" value="Update Description">
-        </form>-->
-        <form action="/profile/" method="POST">
-            {{ form.hidden_tag() }}
-
-            {{ form.description.label(
-            class='form-label') }}
-            </br>
-
-            {{ form.description(
-            class='form-control') }}
-            </br>
-
-            {{ form.submit(
-            class='btn btn-primary') }}
-        </form>
-        {% endif %}
-    </div>
-
-    <div class="col m-2" class="split right" id ="myposts0">
-    <!--div class="centered"-->
-        <h2>Dear {{ current_user.username }},<br> Something on your mind you need to share? </h2>
+            {% if description0 == 'null' %}
+            <h4>Add a short profile descriptions below:</h4>
             <!--
             <form action="/profile/" method="POST">
-                <label for="share_post">Share your thoughts!</label><br>
-                <input type="text" id="share_post"><br>
-                <input type="submit" value="Share."/>
-            </form>  -->
+                <label for="description"></label>
+                <textarea id="description" cols="40" rows="10" placeholder="Please write a short description"></textarea>
+                <br>
+                <input type="submit" value="Update Description">
+            </form> -->
+            <form action="/profile/" method="POST">
+                {{ form.hidden_tag() }}
+<!--
+                {{ form.description.label(
+                class='form-label') }}
+                </br>
+-->
+                {{ form.description(
+                class='form-control') }}
+                </br>
 
-        <form action="/profile/" method="POST">
-            {{ form1.hidden_tag() }}
+                {{ form.submit(
+                class='btn btn-primary') }}
+            </form>
+            {% else %}
+            <h3>Profile Description: </h3>
+            <p>{{ description0 }}</p>
+            <h3>Update your profile descriptions below:</h3>
+            <!--
+            <form action="/profile/" method="POST">
+                <label for="description_update"></label>
+                <textarea id="description_update" cols="40" rows="10">{{ description0 }}</textarea>
+                <br>
+                <input type="submit" value="Update Description">
+            </form>-->
+            <form action="/profile/" method="POST">
+                {{ form.hidden_tag() }}
+    <!--
+                {{ form.description.label(
+                class='form-label') }}
+                </br>
+    -->
+                {{ form.description(
+                class='form-control') }}
+                </br>
 
-            {{ form1.myshare.label(
-            class='form-label') }}
-            </br>
+                {{ form.submit(
+                class='btn btn-primary') }}
+            </form>
+            {% endif %}
 
-            {{ form1.myshare(
-            class='form-control') }}
-            </br>
+            <br>
+            <br>
+            <h4>Add a note</h4>
+            <form action="/profile/" method="POST">
+                {{ form2.hidden_tag() }}
+    <!-- We hide the label
+                {{ form2.mynote.label(
+                class='form-label') }}
+                </br>
+    -->
+                {{ form2.mynote(
+                class='form-control') }}
+                </br>
 
-            {{ form1.submit(
-            class='btn btn-primary') }}
-        </form>
+                {{ form2.submit(
+                class='btn btn-secondary') }}
+            </form>
 
-        <ul>
-            {% for post in posts %}
-            <li>{{ post.content }}</li>
-            {% endfor %}
-        </ul>
-    <!--/div-->
-    </div>
+            {% if notes != 'null' %} <!-- When there are no notes, don't display buggy div placeholder graphics -->
+            <br>
+            <h5>My Notes:</h5>
+                {% for note in notes %}
+                <div class="p-3 mb-2 bg-dark text-white">
+                        {{ note.content }}<br>
+                    <p style="text-align: right;"><em>Date Posted: {{ note.date_created }}</em></p>
 
-</div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
+        <div class="col m-2" class="split right" id ="myposts0">
+        <!--div class="centered"-->
+            <h2> Something on your mind you need to share? </h2>
+                <!--
+                <form action="/profile/" method="POST">
+                    <label for="share_post">Share your thoughts!</label><br>
+                    <input type="text" id="share_post"><br>
+                    <input type="submit" value="Share."/>
+                </form>  -->
+
+            <form action="/profile/" method="POST">
+                {{ form1.hidden_tag() }}
+
+
+    <!--
+                {{ form1.myshare.label(
+                class='form-label') }}
+                </br>
+    -->
+                {{ form1.myshare(
+                class='form-control') }}
+                </br>
+
+                {{ form1.submit(
+                class='btn btn-success') }}
+            </form>
+
+
+
+            {% if posts != 'null' %} <!-- When there are no posts, don't display buggy div placeholder graphics -->
+                {% for post in posts %}
+                <br>
+                <div class="p-3 mb-2 bg-info text-white">
+                        {{ post.content }}<br>
+                    <p style="text-align: right;"><em>Date Posted: {{ post.date_created }}</em></p>
+
+                </div>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+    </div> <!-- row -->
+
+</div> <!-- container fluid -->
 
 
 
