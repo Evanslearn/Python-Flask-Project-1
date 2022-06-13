@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, TextAreaField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField, EmailField
 from wtforms.validators import DataRequired, Length
 
 
@@ -9,7 +9,7 @@ class NameForm(FlaskForm):
 
 
 class AddressForm(FlaskForm):
-    address = StringField("Please add/update address", validators=[DataRequired()])
+    address = EmailField("Please add/update address", validators=[DataRequired()])
     submit = SubmitField("Submit Address")
 
 
@@ -27,7 +27,7 @@ class LoginForm(FlaskForm):
 
 
 class DescriptionForm(FlaskForm):
-    description = TextAreaField("Description", render_kw={"rows": 10, "cols": 32}, validators=[DataRequired()])
+    description = TextAreaField("Description", render_kw={"rows": 5, "cols": 32}, validators=[DataRequired()])
     submit = SubmitField("Update Description")
 
 

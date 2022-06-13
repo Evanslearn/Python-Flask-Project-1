@@ -48,8 +48,12 @@
             </form>
             {% else %}
             <h3>Profile Description: </h3>
-            <p>{{ description0 }}</p>
-            <h3>Update your profile descriptions below:</h3>
+            <p style="font-size: 125%;"><strong>{{ description0 }}</strong></p>
+            <h3>
+                <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#update_desc" aria-expanded="false" aria-controls="togge_description">
+                    Click to edit your Description
+                </button>
+            </h3>
             <!--
             <form action="/profile/" method="POST">
                 <label for="description_update"></label>
@@ -57,20 +61,24 @@
                 <br>
                 <input type="submit" value="Update Description">
             </form>-->
-            <form action="/profile/" method="POST">
-                {{ form.hidden_tag() }}
-    <!--
-                {{ form.description.label(
-                class='form-label') }}
-                </br>
-    -->
-                {{ form.description(
-                class='form-control') }}
-                </br>
+            <div class="collapse" id="update_desc">
+                <form action="/profile/" method="POST" >
+                    {{ form.csrf_token() }}
+        <!-- -->
+                    {{ form.description.label(
+                    class='form-label') }}
+                    </br>
+        <!-- -->
+                    {{ form.description(
+                    class='form-control') }}
 
-                {{ form.submit(
-                class='btn btn-primary') }}
-            </form>
+
+                    </br>
+
+                    {{ form.submit(
+                    class='btn btn-primary') }}
+                </form>
+            </div>
             {% endif %}
 
             <br>
@@ -97,7 +105,8 @@
                 {% for note in notes %}
                 <div class="p-3 mb-2 bg-dark text-white">
                         {{ note.content }}<br>
-                    <p style="text-align: right;"><em>Date Posted: {{ note.date_created }}</em></p>
+                    <div class="float-end" style="text-align: right;"><em>Date Posted: {{ note.date_created }}</em></div>
+                    <!-- With <p> there was a line break below, so we used div. Wouldn't work with span or row -->
 
                 </div>
                 {% endfor %}
@@ -134,13 +143,17 @@
 
 
             {% if posts != 'null' %} <!-- When there are no posts, don't display buggy div placeholder graphics -->
-                {% for post in posts %}
                 <br>
+                <h5>My Posts:</h5>
+                {% for post in posts %}
+
                 <div class="p-3 mb-2 bg-info text-white">
                         {{ post.content }}<br>
-                    <p style="text-align: right;"><em>Date Posted: {{ post.date_created }}</em></p>
+                    <div class="float-end" style="text-align: right;"><em>Date Posted: {{ post.date_created }}</em></div>
+                    <!-- With <p> there was a line break below, so we used div. Wouldn't work with span or row -->
 
                 </div>
+                <br>
                 {% endfor %}
             {% endif %}
 

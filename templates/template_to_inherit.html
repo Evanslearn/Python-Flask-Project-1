@@ -34,7 +34,7 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav" style="font-weight: bold;">
+            <div class="collapse navbar-collapse" id="navbarNav" style="font-weight: bold; font-size: 150%;">
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
@@ -61,7 +61,7 @@
             </div>
         </div>
     </nav>
-
+    <br>
     {% block head %}
 
 
@@ -73,8 +73,8 @@
     <div class="container">
 
     {% for message in get_flashed_messages() %}
-        <div class="row d-flex justify-content-center " style="text-align: center;">
-            <div class="alert alert-warning alert-dismissible fade show col-md-4 col-md-offset-4" role="alert" id="myflasher">
+        <div class="row d-flex justify-content-center" style="text-align: center;">
+            <div class="alert alert-warning alert-dismissible fade show col-md-4 col-md-offset-4 position-absolute top--0 start-0" style="margin-top: -4%;" role="alert" id="myflasher">
               {{ message }}
 
                 <!-- We also make the message disappear after a short while -->

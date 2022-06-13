@@ -353,6 +353,7 @@ def profile():
                     profile_found.description = description
                     db.session.commit()
                     flash("Description Updated")
+                    form.description.data = 'description'
                     return redirect('/profile/')
                     #return render_template('profile.html', id = user.id, description0 = profile_found.description,
                     #                       description = description,
@@ -427,12 +428,13 @@ def profile():
         id = user.id
         if profile_found.description is not None:
             description0 = profile_found.description
+            form.description.data = description0 # Setting the default value in update description to be our description
     if myposts:
         posts = myposts
     if mynotes:
         notes = mynotes
     print("hello")
-    return render_template('profile.html', id = id, description0 = description0, posts = posts, notes = notes,
+    return render_template('profile.html', id = id, profile_found = profile_found, description0 = description0, posts = posts, notes = notes,
                            description = description,
                            form = form,
                            mynote = mynote,
