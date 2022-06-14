@@ -15,6 +15,7 @@
 #   templates (html go here)
 #   static (css and javascript go here)
 # thus, we followed this convention in this program folders' structure
+# --- So, render template searches the templates folder, by default
 # ---------------------------------------------------------------------------------------
 from libraries import *
 from forms import *
@@ -42,6 +43,21 @@ db = SQLAlchemy(app)  # DB initialized with settings from app
 @app.before_first_request
 def create_tables():
     db.create_all()
+
+
+# ----------- ----------- FUNCTIONS TO BE USED BELOW, TO AVOID COPY-PASTING CODE ----------- -----------
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- DELETE SCHEME ----- ----- ----- -----
+def delete_scheme(id, className, nameString, url):
+    to_delete = className.query.get_or_404(id)
+
+    try:
+        db.session.delete(to_delete)
+        db.session.commit()
+        flash(f"{nameString} Deleted Successfully")
+        return redirect(url)
+    except:
+        return flash(f"Encountered error while deleting {nameString}")
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -73,7 +89,7 @@ def home():
         tasks = MyTask.query.order_by(MyTask.date_created).all()
         return render_template('home.html', tasks=tasks,
                                name = name,
-                               form = form)  # It knows it's in the template folder
+                               form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -128,33 +144,14 @@ def test(id):
     else:
         return render_template('update_address.html', task=task,
                                address = address,
-                               form = form)  # It knows it's in the template folder
+                               form = form)
 
 
-# ----- ----- ----- ----- ----- ----- ----- -----
-# Tring to make a blueprint for deleting db enties (task, user, etc)
-#def delete(MyClass, id, url):
-#    entry_to_delete = MyClass.query.get_or_404(id)
-#
-#    try:
-#        db.session.delete(entry_to_delete)
-#        db.session.commit()
-#        return redirect(url)
-#    except:
-#        return "Encountered error while deleting", MyClass
-#    delete(MyTask, id, '/')
 # ----- ----- ----- ----- DELETE ----- ----- ----- -----
 @app.route('/delete/<int:id>')
 def delete_task(id):
-    task_to_delete = MyTask.query.get_or_404(id)
-
-    try:
-        db.session.delete(task_to_delete)
-        db.session.commit()
-        flash("Name Deleted successfully")
-        return redirect('/')
-    except:
-        return "Encountered error while deleting task"
+    delete_scheme(id, MyTask, 'Task', '/')
+    return redirect('/')
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -181,21 +178,12 @@ def register():
             form.password.data = ''
             form.password_repeat.data = ''
 
-        #user_username = request.form.get('username')
-        #user_password = request.form.get('password')
-        #user_password_repeat = request.form.get('password_repeat')
-
         user = User.query.filter_by(username=username).first()
         # If username exists, we cannot register the new user with said username
         if user is not None:
             my_message = 'This username is already taken. Please select another one.'
             flash(my_message)
             return redirect('/register/')
-            #return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
-            #                       username=username,
-            #                       password=password,
-            #                       password_repeat=password_repeat,
-            #                       form=form)
         # If the username does not already exist
         else:
 
@@ -217,11 +205,7 @@ def register():
                 my_message = "The two password fields did not match."
                 flash(my_message)
                 return redirect('/register/')
-                #return render_template('register.html', flag_reg = flag_reg, my_message = my_message,
-                #                       username=username,
-                #                       password=password,
-                #                       password_repeat=password_repeat,
-                #                       form=form)
+
     flag_reg = 0  # We don't want the error message to be displayed on refresh
     print(f"flag reg= {flag_reg}")
     my_message = "Refreshed register.html"
@@ -250,9 +234,6 @@ def login():
             form.username.data = ''
             form.password.data = ''
 
-            #user_username = request.form.get('username')
-            #user_password = request.form.get('password')
-
         try:
             # We try to find if the username is registered in our database
             user = User.query.filter_by(username=username).first()
@@ -276,19 +257,11 @@ def login():
                     my_message = "The password does not match this username"
                     flash(my_message)
                     return redirect('/login/')
-                    #return render_template('login.html', flag_login = flag_login, my_message = my_message,
-                    #                       username = username,
-                    #                       password = password,
-                    #                       form = form)
             else:
                 print(f"not found. flag login = {flag_login}")
                 my_message = "Username not found. Please check your spelling, or register."
                 flash(my_message)
                 return redirect('/login/')
-                #return render_template('login.html', flag_login = flag_login, my_message = my_message,
-                #                       username = username,
-                #                       password = password,
-                 #                      form = form)
 
         except:
             print('Encountered an error while logging in')
@@ -324,11 +297,11 @@ def profile():
     # If we do not find profile entry in profile db, we create the entry
 
     description = None
-    form = DescriptionForm()
-    myshare = None
-    form1 = PostForm()
+    form_description = DescriptionForm()
     mynote = None
-    form2 = NoteForm()
+    form_note = NoteForm()
+    myshare = None
+    form_post = PostForm()
 
     if profile_found:
         pass
@@ -343,9 +316,9 @@ def profile():
         if 'description' in request.form:
 
             # Validate our form
-            if form.validate_on_submit():
-                description = form.description.data
-                form.description.data = ''
+            if form_description.validate_on_submit():
+                description = form_description.description.data
+                form_description.description.data = ''
 
             try:
 
@@ -353,31 +326,22 @@ def profile():
                     profile_found.description = description
                     db.session.commit()
                     flash("Description Updated")
-                    form.description.data = 'description'
+                    form_description.description.data = 'description'
                     return redirect('/profile/')
-                    #return render_template('profile.html', id = user.id, description0 = profile_found.description,
-                    #                       description = description,
-                    #                       form = form,
-                     #                      myshare = myshare,
-                     #                      form1 = form1)
                 else:
                     profile_add.description = description
                     db.session.add(profile_add)
                     db.session.commit()
                     flash("Description Added")
                     return redirect('/profile/')
-                    #return render_template('profile.html', id = user.id, description0 = profile_add.description,
-                    #                       description = description,
-                    #                       form = form,
-                     #                      myshare = myshare,
-                     #                      form1 = form1)
             except:
                 print("Encountered an error while updating profile information")
+
         elif 'mynote' in request.form:
             # Validate our form
-            if form2.validate_on_submit():
-                mynote = form2.mynote.data
-                form2.mynote.data = ''
+            if form_note.validate_on_submit():
+                mynote = form_note.mynote.data
+                form_note.mynote.data = ''
 
             print(f'My note is : {mynote}')
             newnote = Notes(username=user.username, content=mynote)
@@ -386,19 +350,18 @@ def profile():
 
                 db.session.add(newnote)
                 db.session.commit()
-                notes = Notes.query.filter_by(username=user.username).all()
                 flash("Note Taken")
                 return redirect('/profile/')
 
             except:
                 print('Encountered an error while taking note')
+
         elif 'myshare' in request.form:
             # Validate our form
-            if form1.validate_on_submit():
-                myshare = form1.myshare.data
-                form1.myshare.data = ''
+            if form_post.validate_on_submit():
+                myshare = form_post.myshare.data
+                form_post.myshare.data = ''
 
-            #profile_post = request.form.get('share_post')
             print(f'My post is : {myshare}')
             newpost = Posts(username=user.username, content=myshare)
 
@@ -406,14 +369,8 @@ def profile():
 
                 db.session.add(newpost)
                 db.session.commit()
-                posts = Posts.query.filter_by(username=user.username).all()
                 flash("Post Shared")
                 return redirect('/profile/')
-                #return render_template('profile.html', id = user.id, description0 = profile_found.description, posts=posts,
-                 #                      description = description,
-                #                       form = form,
-                 #                      myshare = myshare,
-                #                       form1 = form1)
 
             except:
                 print('Encountered an error while posting')
@@ -428,7 +385,7 @@ def profile():
         id = user.id
         if profile_found.description is not None:
             description0 = profile_found.description
-            form.description.data = description0 # Setting the default value in update description to be our description
+            form_description.description.data = description0 # Setting the default value in update description to be our description
     if myposts:
         posts = myposts
     if mynotes:
@@ -436,11 +393,37 @@ def profile():
     print("hello")
     return render_template('profile.html', id = id, profile_found = profile_found, description0 = description0, posts = posts, notes = notes,
                            description = description,
-                           form = form,
+                           form_description = form_description,
                            mynote = mynote,
-                           form2=form2,
+                           form_note = form_note,
                            myshare = myshare,
-                           form1 = form1)
+                           form_post = form_post)
+
+
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- DELETE NOTE ----- ----- ----- -----
+@app.route('/notes/delete/<int:id>')
+@login_required
+def delete_note(id):
+    delete_scheme(id, Notes, 'Note', '/profile/')
+    return redirect('/profile/')
+
+
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- DELETE POST ----- ----- ----- -----
+@app.route('/posts/delete/<int:id>')
+@login_required
+def delete_post(id):
+    delete_scheme(id, Posts, 'Post', '/profile')
+    return redirect('/profile/')
+
+
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- DELETE USER ----- ----- ----- -----
+@app.route('/users/delete/<int:id>')
+def delete_user(id):
+    delete_scheme(id, User, 'User', '/users/')
+    return redirect('/users/')
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -449,22 +432,7 @@ def profile():
 @login_required
 def users():
     allusers = User.query.order_by(User.date_created).all()
-    return render_template('users.html', allusers=allusers)  # It knows it's in the template folder
-
-
-# ----- ----- ----- ----- ----- ----- ----- -----
-# ----- ----- ----- ----- DELETE USER ----- ----- ----- -----
-@app.route('/users/delete/<int:id>')
-def delete_user(id):
-    user_to_delete = User.query.get_or_404(id)
-
-    try:
-        db.session.delete(user_to_delete)
-        db.session.commit()
-        flash("User Deleted Successfully")
-        return redirect('/users/')
-    except:
-        return "Encountered error while deleting user"
+    return render_template('users.html', allusers=allusers)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----

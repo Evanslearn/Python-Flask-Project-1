@@ -13,8 +13,8 @@
 <!-- Without this div, the page is a bit longer than default width. This happens, because Bootstrap row has left and right margin -15px -->
 <div class="container-fluid"> <!-- Container fluid -->
 
-    <div class="row"> <!-- Row -->
-        <div class="col m-2" class="split left" id = "profile0">
+    <div class="row" > <!-- Row -->
+        <div class="col m-2" class="split left" id = "profile0" >
 
             <h2>Greetings!<br> Your Basic information is here: </h2>
                <ul>
@@ -33,22 +33,22 @@
                 <input type="submit" value="Update Description">
             </form> -->
             <form action="/profile/" method="POST">
-                {{ form.hidden_tag() }}
+                {{ form_description.hidden_tag() }}
 <!--
-                {{ form.description.label(
+                {{ form_description.description.label(
                 class='form-label') }}
                 </br>
 -->
-                {{ form.description(
+                {{ form_description.description(
                 class='form-control') }}
                 </br>
 
-                {{ form.submit(
+                {{ form_description.submit(
                 class='btn btn-primary') }}
             </form>
             {% else %}
-            <h3>Profile Description: </h3>
-            <p style="font-size: 125%;"><strong>{{ description0 }}</strong></p>
+            <h3 style="text-decoration: underline;">Profile Description: </h3>
+            <pre style="font-size: 125%; color: navy;"><strong>{{ description0 }}</strong></pre>
             <h3>
                 <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#update_desc" aria-expanded="false" aria-controls="togge_description">
                     Click to edit your Description
@@ -63,19 +63,17 @@
             </form>-->
             <div class="collapse" id="update_desc">
                 <form action="/profile/" method="POST" >
-                    {{ form.csrf_token() }}
+                    {{ form_description.csrf_token() }}
         <!-- -->
-                    {{ form.description.label(
+                    {{ form_description.description.label(
                     class='form-label') }}
                     </br>
         <!-- -->
-                    {{ form.description(
+                    {{ form_description.description(
                     class='form-control') }}
-
-
                     </br>
 
-                    {{ form.submit(
+                    {{ form_description.submit(
                     class='btn btn-primary') }}
                 </form>
             </div>
@@ -85,17 +83,17 @@
             <br>
             <h4>Add a note</h4>
             <form action="/profile/" method="POST">
-                {{ form2.hidden_tag() }}
+                {{ form_note.hidden_tag() }}
     <!-- We hide the label
-                {{ form2.mynote.label(
+                {{ form_note.mynote.label(
                 class='form-label') }}
                 </br>
     -->
-                {{ form2.mynote(
+                {{ form_note.mynote(
                 class='form-control') }}
                 </br>
 
-                {{ form2.submit(
+                {{ form_note.submit(
                 class='btn btn-secondary') }}
             </form>
 
@@ -104,9 +102,10 @@
             <h5>My Notes:</h5>
                 {% for note in notes %}
                 <div class="p-3 mb-2 bg-dark text-white">
-                        {{ note.content }}<br>
+                    <pre>{{ note.content }}</pre><br>
                     <div class="float-end" style="text-align: right;"><em>Date Posted: {{ note.date_created }}</em></div>
                     <!-- With <p> there was a line break below, so we used div. Wouldn't work with span or row -->
+                    <a class="btn btn-danger" href="/notes/delete/{{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">Delete Note</a>
 
                 </div>
                 {% endfor %}
@@ -124,19 +123,18 @@
                 </form>  -->
 
             <form action="/profile/" method="POST">
-                {{ form1.hidden_tag() }}
-
+                {{ form_post.hidden_tag() }}
 
     <!--
-                {{ form1.myshare.label(
+                {{ form_post.myshare.label(
                 class='form-label') }}
                 </br>
     -->
-                {{ form1.myshare(
+                {{ form_post.myshare(
                 class='form-control') }}
                 </br>
 
-                {{ form1.submit(
+                {{ form_post.submit(
                 class='btn btn-success') }}
             </form>
 
@@ -148,10 +146,10 @@
                 {% for post in posts %}
 
                 <div class="p-3 mb-2 bg-info text-white">
-                        {{ post.content }}<br>
+                    <pre>{{ post.content }}</pre><br>
                     <div class="float-end" style="text-align: right;"><em>Date Posted: {{ post.date_created }}</em></div>
                     <!-- With <p> there was a line break below, so we used div. Wouldn't work with span or row -->
-
+                    <a class="btn btn-danger" href="/posts/delete/{{post.id}}" onclick="return confirm('Are you sure you want to delete this post?');">Delete Post</a>
                 </div>
                 <br>
                 {% endfor %}

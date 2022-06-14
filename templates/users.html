@@ -5,43 +5,50 @@
 {% endblock %}
 
 {% block body %}
-<div class="content">
-    <h1 style="text-align: center;">Users Credentials</h1>
+<div class="container">
+    <h1 style="text-align: center;">User Credentials</h1>
     <hr color="teal">
     {% if allusers|length < 1 %} <!-- if there are no entries show the header below -->
-        <p style="font-size: 150%; color: red; text-align: center">There are no users...</p>
+        <p style="font-size: 150%; color: red; text-align: center">There are no entries... Please fill in an entry name in the form.</p>
 
     {% else %}
 
 
-        <table>
-            <tr>  <!-- Header Row -->
-                <th>Entry ID</th>
-                <th>Username</th>
-                <th>Password</th>
-                <th>Added</th>
-                <th>Actions</th>
-            </tr>
+        <table class="table table-striped table-dark table-hover .table-sm ">
+            <thead>
+                <tr>  <!-- Header Row -->
+                    <th scope="col" class="align-middle text-center">Entry Number</th>
+                    <th scope="col" class="align-middle text-center">Entry ID in DB</th>
+                    <th scope="col" class="align-middle text-center">Username</th>
+                    <th scope="col" class="align-middle text-center">Password</th>
+                    <th scope="col" class="align-middle text-center">Added</th>
+                    <th scope="col" class="align-middle text-center">Actions</th>
+                </tr>
+            </thead>
 
+            <tbody>
             {% for user in allusers %}
                 <tr> <!-- Elements Row(s) -->
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.password_hash }}</td>
-                    <td>{{ user.date_created.date() }}</td> <!-- We show only date, but our database contains date and time -->
-                    <td>
-                        <a href="/users/delete/{{user.id}}">Delete User</a>
+                    <th scope="row" class="align-middle text-center">{{ loop.index0 + 1 }}</th>
+                    <td class="align-middle text-center">{{ user.id }}</td>
+                    <td class="align-middle text-center">{{ user.username }}</td>
+                    <td class="align-middle text-center"><!--{{ user.password_hash }}-->############</td> <!-- We show only date, but our database contains date and time -->
+                    <td class="align-middle text-center">{{ user.date_created.date() }}</td>
+                    <td class="align-middle text-center">
+                        <a class="btn btn-danger" href="/users/delete/{{user.id}}" onclick="return confirm('Are you sure you want to delete this user?');">Delete User</a>
                         <br>
-                        <a href="/update/name/{{user.id}}">Update Name</a>
+                     <!--   <a href="/update/name/{{user.id}}">Update User</a>
                         <br>
-                        <a href="/update/address/{{user.id}}">Update Address</a>
+                        <a href="/update/address/{{user.id}}">Update Address</a> -->
                     </td>
                 </tr>
             {% endfor %}
-
+            </tbody>
         </table>
     {% endif %}
 
+
+</div>
 
 
 

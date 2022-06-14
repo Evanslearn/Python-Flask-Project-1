@@ -11,6 +11,7 @@ function myDisappear(myID) {
   element.style.display = 'none';
 }
 
+
 /*
 function loginForm(myID) {
     var x = document.getElementById(myID);

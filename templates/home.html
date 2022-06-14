@@ -47,7 +47,7 @@ not working yet -->
                     <td class="align-middle text-center">{{ task.date_created.date() }}</td> <!-- We show only date, but our database contains date and time -->
                     <td class="align-middle text-center"> {% if task.email_address is not none %}  {{  task.email_address }}  {% endif %}  </td> <!-- We want to show an empty cell, if no value is given for address -->
                     <td class="align-middle text-center">
-                        <a href="/delete/{{task.id}}">Delete Name</a>
+                        <a class="btn btn-danger" href="/delete/{{task.id}}" onclick="return confirm('Are you sure you want to delete this entry?');">Delete Name</a>
                         <br>
                         <a href="/update/name/{{task.id}}">Update Name</a>
                         <br>
@@ -80,6 +80,7 @@ not working yet -->
             <input type="submit" style="background-color: hsl(340, 20%, 65%);" value="Add Name">-->
         </form>
     </div>
+</div>
 
 
 {% endblock %}
