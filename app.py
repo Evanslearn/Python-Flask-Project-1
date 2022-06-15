@@ -300,7 +300,7 @@ def profile():
     form_description = DescriptionForm()
     mynote = None
     form_note = NoteForm()
-    myshare = None
+    mypost = None
     form_post = PostForm()
 
     if profile_found:
@@ -356,14 +356,14 @@ def profile():
             except:
                 print('Encountered an error while taking note')
 
-        elif 'myshare' in request.form:
+        elif 'mypost' in request.form:
             # Validate our form
             if form_post.validate_on_submit():
-                myshare = form_post.myshare.data
-                form_post.myshare.data = ''
+                mypost = form_post.mypost.data
+                form_post.mypost.data = ''
 
-            print(f'My post is : {myshare}')
-            newpost = Posts(username=user.username, content=myshare)
+            print(f'My post is : {mypost}')
+            newpost = Posts(username=user.username, content=mypost)
 
             try:
 
@@ -382,7 +382,7 @@ def profile():
     notes = 'null'
     mynotes = Notes.query.filter_by(username=user.username).all()
     if profile_found:
-        id = user.id
+        id = profile_found.user.id
         if profile_found.description is not None:
             description0 = profile_found.description
             form_description.description.data = description0 # Setting the default value in update description to be our description
@@ -390,13 +390,12 @@ def profile():
         posts = myposts
     if mynotes:
         notes = mynotes
-    print("hello")
     return render_template('profile.html', id = id, profile_found = profile_found, description0 = description0, posts = posts, notes = notes,
                            description = description,
                            form_description = form_description,
                            mynote = mynote,
                            form_note = form_note,
-                           myshare = myshare,
+                           mypost = mypost,
                            form_post = form_post)
 
 
@@ -405,7 +404,10 @@ def profile():
 @app.route('/notes/delete/<int:id>')
 @login_required
 def delete_note(id):
-    delete_scheme(id, Notes, 'Note', '/profile/')
+    if current_user.username == Notes.query.get_or_404(id).username:
+        delete_scheme(id, Notes, 'Note', '/profile/')
+    else:
+        flash("You are not authorized to delete another user\'s note!")
     return redirect('/profile/')
 
 
@@ -414,7 +416,10 @@ def delete_note(id):
 @app.route('/posts/delete/<int:id>')
 @login_required
 def delete_post(id):
-    delete_scheme(id, Posts, 'Post', '/profile')
+    if current_user.username == Posts.query.get_or_404(id).username:
+        delete_scheme(id, Posts, 'Post', '/profile')
+    else:
+        flash("You are not authorized to delete another user\'s post!")
     return redirect('/profile/')
 
 
@@ -433,6 +438,20 @@ def delete_user(id):
 def users():
     allusers = User.query.order_by(User.date_created).all()
     return render_template('users.html', allusers=allusers)
+
+
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- ADMIN ----- ----- ----- -----
+@app.route('/admin', methods=['POST','GET'])
+@login_required
+def admin():
+    id = current_user.id
+    if id == 26:
+        allusers = User.query.order_by(User.date_created).all()
+        return render_template('admin.html', allusers=allusers)
+    else:
+        flash("You are not the admin...")
+        return redirect('/')
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -471,10 +490,10 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(50), nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    #profile_info = relationship("Profile",backref="user")
-    #children = relationship("Profile",back_populates="user")
-    #children = relationship("Profile")
     profiles = db.relationship('Profile', backref='user')
+    # profile_info = relationship("Profile",backref="user")
+    # children = relationship("Profile",back_populates="user")
+    # children = relationship("Profile")
 
     @property
     def password(self):
@@ -497,12 +516,11 @@ class Profile(db.Model):
     username = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(500))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-
     #parent = relationship("User",back_populates="children")
 
     # Return string everytime we create new element
     def __repr__(self):
-        return '<User %r>' % self.id
+        return '<Profile %r>' % self.id
 # profile.user.x -> access to attribute x of user
 
 
@@ -527,7 +545,7 @@ class LoginTrace(db.Model):
 
     # Return string everytime we create new element
     def __repr__(self):
-        return '<User %r>' % self.id
+        return '<LoginTrace %r>' % self.id
 
 
 if __name__ == "__main__":

@@ -32,8 +32,8 @@ class DescriptionForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    myshare = TextAreaField("Share Your Thoughts!", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
-    submit = SubmitField("Share")
+    mypost = TextAreaField("Share Your Thoughts!", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
+    submit = SubmitField("Post")
 
 
 class NoteForm(FlaskForm):

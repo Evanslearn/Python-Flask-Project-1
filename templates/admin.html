@@ -29,7 +29,7 @@
 
             <tbody>
             {% for user in allusers %}
-                {% if user.username == current_user.username %} <!-- For now, each user should only see his own entry -->
+                {% if current_user.id == 26 %} <!-- For now, each user should only see his own entry -->
                 <tr> <!-- Elements Row(s) -->
                     <th scope="row" class="align-middle text-center">{{ loop.index0 + 1 }}</th>
                     <td class="align-middle text-center">{{ user.id }}</td>
