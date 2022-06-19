@@ -77,9 +77,13 @@
     <!-- Without this div, the page is a bit longer than default width. This happens, because Bootstrap row has left and right margin -15px -->
     <div class="container">
 
-    {% for message in get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
         <div class="row d-flex justify-content-center" style="text-align: center;">
-            <div class="alert alert-warning alert-dismissible fade show col-md-4 col-md-offset-4 position-absolute top--0 start-0" style="margin-top: -4%;" role="alert" id="myflasher">
+            <!-- we are using the bootstrap alert alert-something classes (e.g. alert alert-warning) to choose flash message class.
+            see the python file where we send them as arguments -->
+            <div class="{{ category }} alert-dismissible fade show col-md-4 col-md-offset-4 position-absolute top--0 start-0"
+                 style="margin-top: -4%;" role="alert" id="myflasher">
               {{ message }}
 
                 <!-- We also make the message disappear after a short while -->
@@ -94,7 +98,8 @@
               </button>
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+    {% endwith %}
 
 
     </div>

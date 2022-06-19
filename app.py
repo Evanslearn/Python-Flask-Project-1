@@ -54,10 +54,10 @@ def delete_scheme(id, className, nameString, url):
     try:
         db.session.delete(to_delete)
         db.session.commit()
-        flash(f"{nameString} Deleted Successfully")
+        flash(f"{nameString} Deleted Successfully", category='alert alert-danger')
         return redirect(url)
     except:
-        return flash(f"Encountered error while deleting {nameString}")
+        return flash(f"Encountered error while deleting {nameString}", category='alert alert-warning')
 
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -75,7 +75,7 @@ def home():
         if form.validate_on_submit():
             name = form.name.data
             form.name.data = ''
-            flash("Name added successfully")
+            flash("Name added successfully", category='alert alert-success')
 
         new_task = MyTask(name=name)
 
@@ -105,7 +105,7 @@ def update(id):
         if form.validate_on_submit():
             name = form.name.data
             form.name.data = ''
-            flash("Name updated successfully")
+            flash("Name updated successfully", category='alert alert-success')
         task.name = name
 
         try:
@@ -132,7 +132,7 @@ def test(id):
         if form.validate_on_submit():
             address = form.address.data
             form.address.data = ''
-            flash("Address updated successfully")
+            flash("Address updated successfully", category='alert alert-success')
         task.email_address = address
         #task.email_address = request.form.get('email_address')
 
@@ -182,7 +182,7 @@ def register():
         # If username exists, we cannot register the new user with said username
         if user is not None:
             my_message = 'This username is already taken. Please select another one.'
-            flash(my_message)
+            flash(my_message, category='alert alert-danger')
             return redirect('/register/')
         # If the username does not already exist
         else:
@@ -196,14 +196,14 @@ def register():
                 try:
                     db.session.add(new_user)
                     db.session.commit()
-                    flash("User Registered successfully")
+                    flash("User Registered successfully", category='alert alert-success')
                     return redirect('/login/')
                 except:
                     print(f"not found. flag reg = {flag_reg}")
                     return 'Encountered an error while registering'
             else:
                 my_message = "The two password fields did not match."
-                flash(my_message)
+                flash(my_message, category='alert alert-danger')
                 return redirect('/register/')
 
     flag_reg = 0  # We don't want the error message to be displayed on refresh
@@ -251,16 +251,16 @@ def login():
                     db.session.commit()
                     login_user(user)
 
-                    flash("Access granted to user")
+                    flash("Access granted to user", category='alert alert-success')
                     return redirect('/profile/')
                 else:
                     my_message = "The password does not match this username"
-                    flash(my_message)
+                    flash(my_message, category='alert alert-danger')
                     return redirect('/login/')
             else:
                 print(f"not found. flag login = {flag_login}")
                 my_message = "Username not found. Please check your spelling, or register."
-                flash(my_message)
+                flash(my_message, category='alert alert-danger')
                 return redirect('/login/')
 
         except:
@@ -281,7 +281,7 @@ def login():
 def logout():
     logout_user()
     my_message = "You have been logged out"
-    flash(my_message)
+    flash(my_message, 'alert alert-primary')
     flag_login = 1
     return render_template('login.html', flag_login = flag_login, my_message = my_message,
                            form = LoginForm())
@@ -325,14 +325,14 @@ def profile():
                 if profile_found:
                     profile_found.description = description
                     db.session.commit()
-                    flash("Description Updated")
+                    flash("Description Updated", category='alert alert-success')
                     form_description.description.data = 'description'
                     return redirect('/profile/')
                 else:
                     profile_add.description = description
                     db.session.add(profile_add)
                     db.session.commit()
-                    flash("Description Added")
+                    flash("Description Added", category='alert alert-success')
                     return redirect('/profile/')
             except:
                 print("Encountered an error while updating profile information")
@@ -350,7 +350,7 @@ def profile():
 
                 db.session.add(newnote)
                 db.session.commit()
-                flash("Note Taken")
+                flash("Note Taken", category='alert alert-success')
                 return redirect('/profile/')
 
             except:
@@ -369,7 +369,7 @@ def profile():
 
                 db.session.add(newpost)
                 db.session.commit()
-                flash("Post Shared")
+                flash("Post Shared", category='alert alert-success')
                 return redirect('/profile/')
 
             except:
@@ -407,7 +407,7 @@ def delete_note(id):
     if current_user.username == Notes.query.get_or_404(id).username:
         delete_scheme(id, Notes, 'Note', '/profile/')
     else:
-        flash("You are not authorized to delete another user\'s note!")
+        flash("You are not authorized to delete another user\'s note!", category='alert alert-warning')
     return redirect('/profile/')
 
 
@@ -419,7 +419,7 @@ def delete_post(id):
     if current_user.username == Posts.query.get_or_404(id).username:
         delete_scheme(id, Posts, 'Post', '/profile')
     else:
-        flash("You are not authorized to delete another user\'s post!")
+        flash("You are not authorized to delete another user\'s post!", category='alert alert-warning')
     return redirect('/profile/')
 
 
@@ -450,7 +450,7 @@ def admin():
         allusers = User.query.order_by(User.date_created).all()
         return render_template('admin.html', allusers=allusers)
     else:
-        flash("You are not the admin...")
+        flash("You are not the admin...", category='alert alert-warning')
         return redirect('/')
 
 
@@ -467,7 +467,7 @@ def toolbox():
 @app.route('/toolbox/calculator/')
 def calculator():
 
-    flash("C\'mon... Do math!")
+    flash("C\'mon... Do math!", category='alert alert-primary')
     return render_template('calculator.html')
 
 
