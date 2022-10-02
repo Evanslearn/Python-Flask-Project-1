@@ -22,8 +22,10 @@ from forms import *
 
 
 app = Flask(__name__)  # referencing this file
+# app.config['WTF_CSRF_ENABLED'] = False - Tried to suspend these tokens, to post easily in postman
 app.config['SECRET_KEY'] = "mysecretkeymbinationisamysterforyou"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI that will be used for the connection.
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -70,21 +72,28 @@ def home():
     name = None
     form = NameForm()
 
+
     if request.method == 'POST':
         # Validate our form
         if form.validate_on_submit():
             name = form.name.data
             form.name.data = ''
             flash("Name added successfully", category='alert alert-success')
+            #name = request.form["name"]
+            #name = request.form.get["name"]
+            #form = request.form.get["form"]
+            name = request.form["name"]
 
-        new_task = MyTask(name=name)
+            new_task = MyTask(name=name)
 
         try:
             db.session.add(new_task)
             db.session.commit()
+            tasks = MyTask.query.order_by(MyTask.date_created).all()
             return redirect('/')
         except:
-            return 'Encountered an error while adding'
+            #return f'{name}'
+            return Response('Encountered an error while adding', status = 204)
     else:
         tasks = MyTask.query.order_by(MyTask.date_created).all()
         return render_template('home.html', tasks=tasks,
