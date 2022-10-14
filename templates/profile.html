@@ -24,51 +24,21 @@
                </ul>
 
             {% if description0 == 'null' %}
-            <h4>Add a short profile descriptions below:</h4>
-            <!--
-            <form action="/profile/" method="POST">
-                <label for="description"></label>
-                <textarea id="description" cols="40" rows="10" placeholder="Please write a short description"></textarea>
-                <br>
-                <input type="submit" value="Update Description">
-            </form> -->
-            <form action="/profile/" method="POST">
-                {{ form_description.hidden_tag() }}
-<!--
-                {{ form_description.description.label(
-                class='form-label') }}
-                </br>
--->
-                {{ form_description.description(
-                class='form-control') }}
-                </br>
-
-                {{ form_description.submit(
-                class='btn btn-primary') }}
-            </form>
-            {% else %}
-            <h3 style="text-decoration: underline;">Profile Description: </h3>
-            <pre style="font-size: 125%; color: navy;"><strong>{{ description0 }}</strong></pre>
-            <h3>
-                <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#update_desc" aria-expanded="false" aria-controls="togge_description">
-                    Click to edit your Description
-                </button>
-            </h3>
-            <!--
-            <form action="/profile/" method="POST">
-                <label for="description_update"></label>
-                <textarea id="description_update" cols="40" rows="10">{{ description0 }}</textarea>
-                <br>
-                <input type="submit" value="Update Description">
-            </form>-->
-            <div class="collapse" id="update_desc">
-                <form action="/profile/" method="POST" >
-                    {{ form_description.csrf_token() }}
-        <!-- -->
+                <h4>Add a short profile descriptions below:</h4>
+                <!--
+                <form action="/profile/" method="POST">
+                    <label for="description"></label>
+                    <textarea id="description" cols="40" rows="10" placeholder="Please write a short description"></textarea>
+                    <br>
+                    <input type="submit" value="Update Description">
+                </form> -->
+                <form action="/profile/" method="POST">
+                    {{ form_description.hidden_tag() }}
+    <!--
                     {{ form_description.description.label(
                     class='form-label') }}
                     </br>
-        <!-- -->
+    -->
                     {{ form_description.description(
                     class='form-control') }}
                     </br>
@@ -76,7 +46,38 @@
                     {{ form_description.submit(
                     class='btn btn-primary') }}
                 </form>
-            </div>
+
+            {% else %}
+                <h3 style="text-decoration: underline;">Profile Description: </h3>
+                <pre style="font-size: 125%; color: navy;"><strong>{{ description0 }}</strong></pre>
+                <h3>
+                    <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#update_desc" aria-expanded="false" aria-controls="toggle_description">
+                        Click to edit your Description
+                    </button>
+                </h3>
+                <!--
+                <form action="/profile/" method="POST">
+                    <label for="description_update"></label>
+                    <textarea id="description_update" cols="40" rows="10">{{ description0 }}</textarea>
+                    <br>
+                    <input type="submit" value="Update Description">
+                </form>-->
+                <div class="collapse" id="update_desc">
+                    <form action="/profile/" method="POST" >
+                        {{ form_description.csrf_token() }}
+            <!-- -->
+                        {{ form_description.description.label(
+                        class='form-label') }}
+                        </br>
+            <!-- -->
+                        {{ form_description.description(
+                        class='form-control') }}
+                        </br>
+
+                        {{ form_description.submit(
+                        class='btn btn-primary') }}
+                    </form>
+                </div>
             {% endif %}
 
             <br>
@@ -105,7 +106,35 @@
                     <pre>{{ note.content }}</pre><br>
                     <div class="float-end" style="text-align: right;"><em>Date Posted: {{ note.date_created }}</em></div>
                     <!-- With <p> there was a line break below, so we used div. Wouldn't work with span or row -->
-                    <a class="btn btn-danger" href="/notes/delete/{{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">Delete Note</a>
+
+                    <h3>
+                        <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#update_note" aria-expanded="false" aria-controls="toggle_note">
+                        Click to edit your Note
+                        </button>
+
+                        <a class="btn btn-danger" href="/notes/delete/{{note.id}}" onclick="return confirm('Are you sure you want to delete this note?');">Delete Note</a>
+                    </h3>
+
+
+
+
+                    <div class="collapse" id="update_note">
+                    <form action="/profile/" method="PUT" >
+                        {{ note.id }}
+                        {{ form_updatenote.csrf_token() }}
+                    <!-- -->
+                        {{ form_updatenote.mynote.label(
+                        class='form-label') }}
+                        </br>
+                    <!-- -->
+                        {{ form_updatenote.mynote(
+                        class='form-control') }}
+                        </br>
+
+                        {{ form_updatenote.submit(
+                        class='btn btn-primary') }}
+                    </form>
+                    </div>
 
                 </div>
                 {% endfor %}

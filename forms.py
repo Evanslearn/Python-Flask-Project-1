@@ -39,3 +39,8 @@ class PostForm(FlaskForm):
 class NoteForm(FlaskForm):
     mynote = TextAreaField("Track a Note:", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
     submit = SubmitField("Post Note")
+
+
+class UpdateNoteForm(FlaskForm):
+    mynote = TextAreaField("Update your Note:", render_kw={"rows": 3, "cols": 32}, validators=[DataRequired()])
+    submit = SubmitField("Update Note")

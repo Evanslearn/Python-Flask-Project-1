@@ -298,7 +298,7 @@ def logout():
 
 # ----- ----- ----- ----- ----- ----- ----- -----
 # ----- ----- ----- ----- PROFILE ----- ----- ----- -----
-@app.route('/profile/', methods=['POST','GET'])
+@app.route('/profile/', methods=['POST','GET','PUT'])
 @login_required
 def profile():
     user = User.query.filter_by(username=current_user.username).first()
@@ -311,6 +311,8 @@ def profile():
     form_note = NoteForm()
     mypost = None
     form_post = PostForm()
+    update_mynote = None
+    form_updatenote = UpdateNoteForm()
 
     if profile_found:
         pass
@@ -384,6 +386,17 @@ def profile():
             except:
                 print('Encountered an error while posting')
 
+
+    if request.method == 'PUT':
+        print(f"request.form -> {request.form}")
+
+        if profile_found:
+            profile_found.note = description
+            db.session.commit()
+            flash("Description Updated", category='alert alert-success')
+            form_description.description.data = 'description'
+            return redirect('/profile/')
+
     id = current_user.id
     description0 = 'null'
     posts = 'null'
@@ -405,7 +418,37 @@ def profile():
                            mynote = mynote,
                            form_note = form_note,
                            mypost = mypost,
-                           form_post = form_post)
+                           form_post = form_post,
+                           update_mynote = update_mynote,
+                           form_updatenote = form_updatenote
+                           )
+
+
+# ----- ----- ----- ----- ----- ----- ----- -----
+# ----- ----- ----- ----- UPDATE NOTE ----- ----- ----- -----
+@app.route('/update/note/<int:id>', methods=['GET','POST','PUT'])
+def update(id):
+    tempnote = notes.query.get_or_404(id)
+    content = tempnote.content
+    form = UpdateNoteForm()
+
+    if request.method == 'PUT':
+        # Validate our form
+        if form.validate_on_submit():
+            content = form.content.data
+            form.name.data = ''
+            flash("Name updated successfully", category='alert alert-success')
+        note.content = name
+
+        try:
+            db.session.commit()
+            return redirect('/')
+        except:
+            return "Encountered error while updating"
+    else:
+        return render_template('update_name.html', task=task,
+                               name = name,
+                               form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
