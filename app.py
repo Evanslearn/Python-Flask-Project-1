@@ -387,22 +387,22 @@ def profile():
                 print('Encountered an error while posting')
 
 
-    if request.method == 'PUT':
-        print(f"request.form -> {request.form}")
-
-        if profile_found:
-            profile_found.note = description
-            db.session.commit()
-            flash("Description Updated", category='alert alert-success')
-            form_description.description.data = 'description'
-            return redirect('/profile/')
+    # if request.method == 'PUT':
+    #     print(f"request.form -> {request.form}")
+    #
+    #     if profile_found:
+    #         profile_found.note = description
+    #         db.session.commit()
+    #         flash("Description Updated", category='alert alert-success')
+    #         form_description.description.data = 'description'
+    #         return redirect('/profile/')
 
     id = current_user.id
     description0 = 'null'
     posts = 'null'
-    myposts = Posts.query.filter_by(username=user.username).all()
+    myposts = Posts.query.filter_by(username=user.username).order_by(Posts.id.desc()).all()
     notes = 'null'
-    mynotes = Notes.query.filter_by(username=user.username).all()
+    mynotes = Notes.query.filter_by(username=user.username).order_by(Notes.id.desc()).all()
     if profile_found:
         id = profile_found.user.id
         if profile_found.description is not None:
@@ -426,29 +426,29 @@ def profile():
 
 # ----- ----- ----- ----- ----- ----- ----- -----
 # ----- ----- ----- ----- UPDATE NOTE ----- ----- ----- -----
-@app.route('/update/note/<int:id>', methods=['GET','POST','PUT'])
-def update(id):
-    tempnote = notes.query.get_or_404(id)
-    content = tempnote.content
-    form = UpdateNoteForm()
-
-    if request.method == 'PUT':
-        # Validate our form
-        if form.validate_on_submit():
-            content = form.content.data
-            form.name.data = ''
-            flash("Name updated successfully", category='alert alert-success')
-        note.content = name
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return "Encountered error while updating"
-    else:
-        return render_template('update_name.html', task=task,
-                               name = name,
-                               form = form)
+# @app.route('/update/note/<int:id>', methods=['GET','POST','PUT'])
+# def update(id):
+#     tempnote = notes.query.get_or_404(id)
+#     content = tempnote.content
+#     form = UpdateNoteForm()
+#
+#     if request.method == 'PUT':
+#         # Validate our form
+#         if form.validate_on_submit():
+#             content = form.content.data
+#             form.name.data = ''
+#             flash("Name updated successfully", category='alert alert-success')
+#         note.content = name
+#
+#         try:
+#             db.session.commit()
+#             return redirect('/')
+#         except:
+#             return "Encountered error while updating"
+#     else:
+#         return render_template('update_name.html', task=task,
+#                                name = name,
+#                                form = form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
