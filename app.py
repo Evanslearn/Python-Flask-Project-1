@@ -17,15 +17,35 @@
 # thus, we followed this convention in this program folders' structure
 # --- So, render template searches the templates folder, by default
 # ---------------------------------------------------------------------------------------
+import pyodbc
+
 from libraries import *
 from forms import *
+from sqlalchemy import create_engine
+from sqlalchemy.dialects import mssql
 
 
 app = Flask(__name__)  # referencing this file
 # app.config['WTF_CSRF_ENABLED'] = False - Tried to suspend these tokens, to post easily in postman
 app.config['SECRET_KEY'] = "mysecretkeymbinationisamysterforyou"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI that will be used for the connection.
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI that will be used for the connection.
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://DESKTOP-GR5QCJB\Vagge:@localhost/master.mdf'  # The database URI that will be used for the connection.
+#app.config['SQLALCHEMY_DATABASE_URI'] = 't-sql://vaggeliskoukolis@gmail.com:duality102310@localhost/master.mdf'  # The database URI that will be used for the connection.
 
+server = '(localdb)\Local'
+database = 'master'
+username = 'DESKTOP-GR5QCJB\Vagge'
+password = ''
+driver = 'ODBC Driver 17 for SQL Server'
+#db_connection = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
+db_connection = f'mssql+pyodbc://@{server}/{database}?driver={driver}'
+#engine = create_engine(db_connection)
+#connection = engine.connect()
+#db = engine.connect()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
+#db = pyodbc.connect(db_connection)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb2.db'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -67,11 +87,23 @@ def delete_scheme(id, className, nameString, url):
 # -------------------------------------------------------------------------------------------------------------------- #
 # ----- ----- ----- ----- ----- ----- ----- -----
 # ----- ----- ----- ----- HOME ----- ----- ----- -----
-@app.route('/', methods=['POST','GET'])
+@app.route('/', methods=['GET'])
 def home():
-    name = None
     form = NameForm()
 
+    if request.method == 'GET':
+        tasks = MyTask.query.order_by(MyTask.date_created).all()
+        print(name)
+        return render_template('home.html', tasks=tasks,
+                               form=form)
+    else:
+        return Response('Encountered an error while getting home', status=404)
+
+
+@app.route('/', methods=['POST'])
+def name():
+    name = None
+    form = NameForm()
 
     if request.method == 'POST':
         # Validate our form
@@ -79,26 +111,29 @@ def home():
             name = form.name.data
             form.name.data = ''
             flash("Name added successfully", category='alert alert-success')
-            #name = request.form["name"]
-            #name = request.form.get["name"]
-            #form = request.form.get["form"]
+            # name = request.form["name"]
+            # name = request.form.get["name"]
+            # form = request.form.get["form"]
             name = request.form["name"]
+            print(name)
 
-            new_task = MyTask(name=name)
+            new_task = MyTask(name = name)
+            print(new_task)
 
         try:
             db.session.add(new_task)
+            print(db.session.add(new_task))
             db.session.commit()
-            tasks = MyTask.query.order_by(MyTask.date_created).all()
+            print(new_task.id)
+
+            #tasks = MyTask.query.order_by(MyTask.date_created).all()
             return redirect('/')
         except:
-            #return f'{name}'
-            return Response('Encountered an error while adding', status = 204)
-    else:
-        tasks = MyTask.query.order_by(MyTask.date_created).all()
+            # return f'{name}'
+            return Response('Encountered an error while adding', status=204)
         return render_template('home.html', tasks=tasks,
-                               name = name,
-                               form = form)
+                               name=name,
+                               form=form)
 
 
 # ----- ----- ----- ----- ----- ----- ----- -----
@@ -529,7 +564,7 @@ def calculator():
 class MyTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Unique Identifier for each table record (PRIMARY KEY)
     name = db.Column(db.String(50), nullable=False)
-    email_address = db.Column(db.String(50), nullable=False)
+    email_address = db.Column(db.String(50))
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Return string everytime we create new element
