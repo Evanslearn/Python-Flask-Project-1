@@ -17,33 +17,32 @@
 # thus, we followed this convention in this program folders' structure
 # --- So, render template searches the templates folder, by default
 # ---------------------------------------------------------------------------------------
-import pyodbc
-
 from libraries import *
 from forms import *
-from sqlalchemy import create_engine
-from sqlalchemy.dialects import mssql
 
 
 app = Flask(__name__)  # referencing this file
 # app.config['WTF_CSRF_ENABLED'] = False - Tried to suspend these tokens, to post easily in postman
 app.config['SECRET_KEY'] = "mysecretkeymbinationisamysterforyou"
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI that will be used for the connection.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb.db'  # The database URI that will be used for the connection.
+
+# --- Trying to change DB to Microsoft SQL Server ---
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pymssql://DESKTOP-GR5QCJB\Vagge:@localhost/master.mdf'  # The database URI that will be used for the connection.
 #app.config['SQLALCHEMY_DATABASE_URI'] = 't-sql://vaggeliskoukolis@gmail.com:duality102310@localhost/master.mdf'  # The database URI that will be used for the connection.
 
-server = '(localdb)\Local'
-database = 'master'
-username = 'DESKTOP-GR5QCJB\Vagge'
-password = ''
-driver = 'ODBC Driver 17 for SQL Server'
-#db_connection = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
-db_connection = f'mssql+pyodbc://@{server}/{database}?driver={driver}'
+#    server = '(localdb)\Local'
+#    database = 'master'
+# #   username = 'DESKTOP-GR5QCJB\Vagge'
+#    password = ''
+ #   driver = 'ODBC Driver 17 for SQL Server'
+ #   #db_connection = f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'
+#db_connection = f'mssql+pyodbc://@{server}/{database}?driver={driver}'
+
 #engine = create_engine(db_connection)
 #connection = engine.connect()
 #db = engine.connect()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
+#app.config['SQLALCHEMY_DATABASE_URI'] = db_connection
 #db = pyodbc.connect(db_connection)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydb2.db'
 
@@ -93,7 +92,6 @@ def home():
 
     if request.method == 'GET':
         tasks = MyTask.query.order_by(MyTask.date_created).all()
-        print(name)
         return render_template('home.html', tasks=tasks,
                                form=form)
     else:
@@ -110,24 +108,24 @@ def name():
         if form.validate_on_submit():
             name = form.name.data
             form.name.data = ''
-            flash("Name added successfully", category='alert alert-success')
+
             # name = request.form["name"]
             # name = request.form.get["name"]
             # form = request.form.get["form"]
-            name = request.form["name"]
-            print(name)
-
-            new_task = MyTask(name = name)
-            print(new_task)
+            #name = request.form["name"]
 
         try:
+            new_task = MyTask(name=name)
+
             db.session.add(new_task)
             print(db.session.add(new_task))
             db.session.commit()
             print(new_task.id)
 
-            #tasks = MyTask.query.order_by(MyTask.date_created).all()
+            tasks = MyTask.query.order_by(MyTask.date_created).all()
+            flash("Name added successfully", category='alert alert-success')
             return redirect('/')
+
         except:
             # return f'{name}'
             return Response('Encountered an error while adding', status=204)
