@@ -69,8 +69,13 @@ def create_tables():
 # ----------- ----------- FUNCTIONS TO BE USED BELOW, TO AVOID COPY-PASTING CODE ----------- -----------
 # ----- ----- ----- ----- ----- ----- ----- -----
 # ----- ----- ----- ----- DELETE SCHEME ----- ----- ----- -----
+# test github merge
+# test github merge
+# test
+# test
 def delete_scheme(id, className, nameString, url):
     to_delete = className.query.get_or_404(id)
+    print(to_delete)
 
     try:
         db.session.delete(to_delete)
